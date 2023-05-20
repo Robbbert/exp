@@ -869,7 +869,7 @@ end
 			"LUA_COMPAT_5_1",
 			"LUA_COMPAT_5_2",
 		}
-	if not (_OPTIONS["targetos"]=="windows") and not (_OPTIONS["targetos"]=="asmjs") then
+	if not (_OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui") and not (_OPTIONS["targetos"]=="asmjs") then
 		defines {
 			"LUA_USE_POSIX",
 		}
@@ -1063,7 +1063,7 @@ end
 		MAME_DIR .. "3rdparty/portmidi/pm_common/pmutil.c",
 	}
 
-	if _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		files {
 			MAME_DIR .. "3rdparty/portmidi/porttime/ptwinmm.c",
 			MAME_DIR .. "3rdparty/portmidi/pm_win/pmwin.c",
@@ -1218,7 +1218,7 @@ project "bimg"
 
 	configuration { }
 
-	if _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="asmjs" then
+	if _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" or _OPTIONS["targetos"]=="asmjs" then
 		if _OPTIONS["gcc"]~=nil and (string.find(_OPTIONS["gcc"], "clang") or string.find(_OPTIONS["gcc"], "asmjs")) then
 			buildoptions_cpp {
 				"-Wno-unused-const-variable",
@@ -1339,7 +1339,7 @@ end
 		end
 	end
 
-	if _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		if _OPTIONS["gcc"]~=nil and string.find(_OPTIONS["gcc"], "clang") then
 			buildoptions {
 				"-Wno-unknown-attributes",
@@ -1531,7 +1531,7 @@ project "portaudio"
 		MAME_DIR .. "3rdparty/portaudio/src/hostapi/skeleton/pa_hostapi_skeleton.c",
 	}
 
-	if _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		defines {
 			"PA_USE_DS=1",
 			"PA_USE_WASAPI=1",
@@ -1858,7 +1858,7 @@ end
 		MAME_DIR .. "3rdparty/SDL2/src/video/SDL_video.c",
 
 	}
-	if _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		files {
 			MAME_DIR .. "3rdparty/SDL2/src/libm/e_atan2.c",
 			MAME_DIR .. "3rdparty/SDL2/src/libm/e_log.c",
@@ -1881,7 +1881,7 @@ end
 			MAME_DIR .. "3rdparty/SDL2/src/libm/s_tan.c",
 		}
 	end
-	if _OPTIONS["targetos"]~="windows" then
+	if _OPTIONS["targetos"]~="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		files {
 			MAME_DIR .. "3rdparty/SDL2/src/render/opengles/SDL_render_gles.c",
 			MAME_DIR .. "3rdparty/SDL2/src/render/opengles/SDL_glesfuncs.h",
@@ -1977,7 +1977,7 @@ end
 		}
 	end
 
-	if _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		files {
 			MAME_DIR .. "3rdparty/SDL2/src/thread/generic/SDL_syscond.c",
 			MAME_DIR .. "3rdparty/SDL2/src/audio/directsound/SDL_directsound.c",

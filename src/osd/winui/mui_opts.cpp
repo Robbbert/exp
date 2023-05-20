@@ -148,7 +148,7 @@ void OptionsInit()
 }
 
 // Restore ui settings to factory
-void ResetGUI(void)
+void ResetGUI()
 {
 	settings.reset_and_save(MUI_INI_FILENAME);
 }
@@ -231,9 +231,19 @@ void SetViewMode(int val)
 	settings.setter(MUIOPTION_LIST_MODE, val);
 }
 
-int GetViewMode(void)
+int  GetViewMode()
 {
 	return settings.int_value(MUIOPTION_LIST_MODE);
+}
+
+void SetEnableIndent(bool value)
+{
+	settings.setter(MUIOPTION_ENABLE_INDENT, value);
+}
+
+bool GetEnableIndent()
+{
+	return settings.bool_value(MUIOPTION_ENABLE_INDENT);
 }
 
 void SetGameCheck(BOOL game_check)
@@ -241,7 +251,7 @@ void SetGameCheck(BOOL game_check)
 	settings.setter(MUIOPTION_CHECK_GAME, game_check);
 }
 
-BOOL GetGameCheck(void)
+BOOL GetGameCheck()
 {
 	return settings.bool_value(MUIOPTION_CHECK_GAME);
 }
@@ -251,7 +261,7 @@ void SetJoyGUI(BOOL use_joygui)
 	settings.setter(MUIOPTION_JOYSTICK_IN_INTERFACE, use_joygui);
 }
 
-BOOL GetJoyGUI(void)
+BOOL GetJoyGUI()
 {
 	return settings.bool_value( MUIOPTION_JOYSTICK_IN_INTERFACE);
 }
@@ -261,7 +271,7 @@ void SetKeyGUI(BOOL use_keygui)
 	settings.setter(MUIOPTION_KEYBOARD_IN_INTERFACE, use_keygui);
 }
 
-BOOL GetKeyGUI(void)
+BOOL GetKeyGUI()
 {
 	return settings.bool_value(MUIOPTION_KEYBOARD_IN_INTERFACE);
 }
@@ -271,7 +281,7 @@ void SetCycleScreenshot(int cycle_screenshot)
 	settings.setter(MUIOPTION_CYCLE_SCREENSHOT, cycle_screenshot);
 }
 
-int GetCycleScreenshot(void)
+int GetCycleScreenshot()
 {
 	return settings.int_value(MUIOPTION_CYCLE_SCREENSHOT);
 }
@@ -281,7 +291,7 @@ void SetStretchScreenShotLarger(BOOL stretch)
 	settings.setter(MUIOPTION_STRETCH_SCREENSHOT_LARGER, stretch);
 }
 
-BOOL GetStretchScreenShotLarger(void)
+BOOL GetStretchScreenShotLarger()
 {
 	return settings.bool_value(MUIOPTION_STRETCH_SCREENSHOT_LARGER);
 }
@@ -291,7 +301,7 @@ void SetScreenshotBorderSize(int size)
 	settings.setter(MUIOPTION_SCREENSHOT_BORDER_SIZE, size);
 }
 
-int GetScreenshotBorderSize(void)
+int GetScreenshotBorderSize()
 {
 	return settings.int_value(MUIOPTION_SCREENSHOT_BORDER_SIZE);
 }
@@ -301,7 +311,7 @@ void SetScreenshotBorderColor(COLORREF uColor)
 	options_set_color_default(MUIOPTION_SCREENSHOT_BORDER_COLOR, uColor, COLOR_3DFACE);
 }
 
-COLORREF GetScreenshotBorderColor(void)
+COLORREF GetScreenshotBorderColor()
 {
 	return options_get_color_default(MUIOPTION_SCREENSHOT_BORDER_COLOR, COLOR_3DFACE);
 }
@@ -311,7 +321,7 @@ void SetFilterInherit(BOOL inherit)
 	settings.setter(MUIOPTION_INHERIT_FILTER, inherit);
 }
 
-BOOL GetFilterInherit(void)
+BOOL GetFilterInherit()
 {
 	return settings.bool_value( MUIOPTION_INHERIT_FILTER);
 }
@@ -321,7 +331,7 @@ void SetOffsetClones(BOOL offset)
 	settings.setter(MUIOPTION_OFFSET_CLONES, offset);
 }
 
-BOOL GetOffsetClones(void)
+BOOL GetOffsetClones()
 {
 	return settings.bool_value( MUIOPTION_OFFSET_CLONES);
 }
@@ -331,7 +341,7 @@ void SetSavedFolderID(UINT val)
 	settings.setter(MUIOPTION_DEFAULT_FOLDER_ID, (int) val);
 }
 
-UINT GetSavedFolderID(void)
+UINT GetSavedFolderID()
 {
 	return (UINT) settings.int_value(MUIOPTION_DEFAULT_FOLDER_ID);
 }
@@ -341,7 +351,7 @@ void SetOverrideRedX(BOOL val)
 	settings.setter(MUIOPTION_OVERRIDE_REDX, val);
 }
 
-BOOL GetOverrideRedX(void)
+BOOL GetOverrideRedX()
 {
 	return settings.bool_value(MUIOPTION_OVERRIDE_REDX);
 }
@@ -427,7 +437,7 @@ void SetShowStatusBar(BOOL val)
 	settings.setter(MUIOPTION_SHOW_STATUS_BAR, val);
 }
 
-BOOL GetShowStatusBar(void)
+BOOL GetShowStatusBar()
 {
 	return settings.bool_value( MUIOPTION_SHOW_STATUS_BAR);
 }
@@ -437,7 +447,7 @@ void SetShowTabCtrl (BOOL val)
 	settings.setter(MUIOPTION_SHOW_TABS, val);
 }
 
-BOOL GetShowTabCtrl (void)
+BOOL GetShowTabCtrl ()
 {
 	return settings.bool_value( MUIOPTION_SHOW_TABS);
 }
@@ -447,7 +457,7 @@ void SetShowToolBar(BOOL val)
 	settings.setter(MUIOPTION_SHOW_TOOLBAR, val);
 }
 
-BOOL GetShowToolBar(void)
+BOOL GetShowToolBar()
 {
 	return settings.bool_value( MUIOPTION_SHOW_TOOLBAR);
 }
@@ -457,7 +467,7 @@ void SetCurrentTab(int val)
 	settings.setter(MUIOPTION_CURRENT_TAB, val);
 }
 
-int GetCurrentTab(void)
+int GetCurrentTab()
 {
 	return settings.int_value(MUIOPTION_CURRENT_TAB);
 }
@@ -471,7 +481,7 @@ void SetDefaultGame(int val)
 		settings.setter(MUIOPTION_DEFAULT_GAME, driver_list::driver(val).name);
 }
 
-uint32_t GetDefaultGame(void)
+uint32_t GetDefaultGame()
 {
 	string t = settings.getter(MUIOPTION_DEFAULT_GAME);
 	if (t.empty())
@@ -503,7 +513,7 @@ void SetWindowState(UINT state)
 	settings.setter(MUIOPTION_WINDOW_STATE, (int)state);
 }
 
-UINT GetWindowState(void)
+UINT GetWindowState()
 {
 	return settings.int_value(MUIOPTION_WINDOW_STATE);
 }
@@ -513,7 +523,7 @@ void SetWindowPanes(int val)
 	settings.setter(MUIOPTION_WINDOW_PANES, val & 15);
 }
 
-UINT GetWindowPanes(void)
+UINT GetWindowPanes()
 {
 	return settings.int_value(MUIOPTION_WINDOW_PANES) & 15;
 }
@@ -559,7 +569,7 @@ void SetListFontColor(COLORREF uColor)
 	options_set_color_default(MUIOPTION_TEXT_COLOR, uColor, COLOR_WINDOWTEXT);
 }
 
-COLORREF GetListFontColor(void)
+COLORREF GetListFontColor()
 {
 	return options_get_color_default(MUIOPTION_TEXT_COLOR, COLOR_WINDOWTEXT);
 }
@@ -569,7 +579,7 @@ void SetListCloneColor(COLORREF uColor)
 	options_set_color_default(MUIOPTION_CLONE_COLOR, uColor, COLOR_WINDOWTEXT);
 }
 
-COLORREF GetListCloneColor(void)
+COLORREF GetListCloneColor()
 {
 	return options_get_color_default(MUIOPTION_CLONE_COLOR, COLOR_WINDOWTEXT);
 }
@@ -608,7 +618,7 @@ BOOL AllowedToSetShowTab(int tab,BOOL show)
 	return show_tab_flags != 0;
 }
 
-int GetHistoryTab(void)
+int GetHistoryTab()
 {
 	return settings.int_value(MUIOPTION_HISTORY_TAB);
 }
@@ -681,7 +691,7 @@ void SetSortColumn(int column)
 	settings.setter(MUIOPTION_SORT_COLUMN, column);
 }
 
-int GetSortColumn(void)
+int GetSortColumn()
 {
 	return settings.int_value(MUIOPTION_SORT_COLUMN);
 }
@@ -691,12 +701,12 @@ void SetSortReverse(BOOL reverse)
 	settings.setter(MUIOPTION_SORT_REVERSED, reverse);
 }
 
-BOOL GetSortReverse(void)
+BOOL GetSortReverse()
 {
 	return settings.bool_value( MUIOPTION_SORT_REVERSED);
 }
 
-const string GetBgDir (void)
+const string GetBgDir ()
 {
 	string t = settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
 	if (t.empty())
@@ -710,7 +720,7 @@ void SetBgDir (const char* path)
 	settings.setter(MUIOPTION_BACKGROUND_DIRECTORY, path);
 }
 
-const string GetVideoDir(void)
+const string GetVideoDir()
 {
 	string t = settings.getter(MUIOPTION_VIDEO_DIRECTORY);
 	if (t.empty())
@@ -724,7 +734,7 @@ void SetVideoDir(const char *path)
 	settings.setter(MUIOPTION_VIDEO_DIRECTORY, path);
 }
 
-const string GetManualsDir(void)
+const string GetManualsDir()
 {
 	string t = settings.getter(MUIOPTION_MANUALS_DIRECTORY);
 	if (t.empty())
@@ -835,172 +845,172 @@ void GetTextPlayTime(uint32_t driver_index, char *buf)
 	}
 }
 
-input_seq* Get_ui_key_up(void)
+input_seq* Get_ui_key_up()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_UP);
 }
 
-input_seq* Get_ui_key_down(void)
+input_seq* Get_ui_key_down()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_DOWN);
 }
 
-input_seq* Get_ui_key_left(void)
+input_seq* Get_ui_key_left()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_LEFT);
 }
 
-input_seq* Get_ui_key_right(void)
+input_seq* Get_ui_key_right()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_RIGHT);
 }
 
-input_seq* Get_ui_key_start(void)
+input_seq* Get_ui_key_start()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_START);
 }
 
-input_seq* Get_ui_key_pgup(void)
+input_seq* Get_ui_key_pgup()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_PGUP);
 }
 
-input_seq* Get_ui_key_pgdwn(void)
+input_seq* Get_ui_key_pgdwn()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_PGDWN);
 }
 
-input_seq* Get_ui_key_home(void)
+input_seq* Get_ui_key_home()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_HOME);
 }
 
-input_seq* Get_ui_key_end(void)
+input_seq* Get_ui_key_end()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_END);
 }
 
-input_seq* Get_ui_key_ss_change(void)
+input_seq* Get_ui_key_ss_change()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_SS_CHANGE);
 }
 
-input_seq* Get_ui_key_history_up(void)
+input_seq* Get_ui_key_history_up()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_HISTORY_UP);
 }
 
-input_seq* Get_ui_key_history_down(void)
+input_seq* Get_ui_key_history_down()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_HISTORY_DOWN);
 }
 
-input_seq* Get_ui_key_context_filters(void)
+input_seq* Get_ui_key_context_filters()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_CONTEXT_FILTERS);
 }
 
-input_seq* Get_ui_key_select_random(void)
+input_seq* Get_ui_key_select_random()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_SELECT_RANDOM);
 }
 
-input_seq* Get_ui_key_game_audit(void)
+input_seq* Get_ui_key_game_audit()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_GAME_AUDIT);
 }
 
-input_seq* Get_ui_key_game_properties(void)
+input_seq* Get_ui_key_game_properties()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_GAME_PROPERTIES);
 }
 
-input_seq* Get_ui_key_help_contents(void)
+input_seq* Get_ui_key_help_contents()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_HELP_CONTENTS);
 }
 
-input_seq* Get_ui_key_update_gamelist(void)
+input_seq* Get_ui_key_update_gamelist()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_UPDATE_GAMELIST);
 }
 
-input_seq* Get_ui_key_view_folders(void)
+input_seq* Get_ui_key_view_folders()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_FOLDERS);
 }
 
-input_seq* Get_ui_key_view_fullscreen(void)
+input_seq* Get_ui_key_view_fullscreen()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_FULLSCREEN);
 }
 
-input_seq* Get_ui_key_view_pagetab(void)
+input_seq* Get_ui_key_view_pagetab()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_PAGETAB);
 }
 
-input_seq* Get_ui_key_view_picture_area(void)
+input_seq* Get_ui_key_view_picture_area()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_PICTURE_AREA);
 }
 
-input_seq* Get_ui_key_view_software_area(void)
+input_seq* Get_ui_key_view_software_area()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_SOFTWARE_AREA);
 }
 
-input_seq* Get_ui_key_view_status(void)
+input_seq* Get_ui_key_view_status()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_STATUS);
 }
 
-input_seq* Get_ui_key_view_toolbars(void)
+input_seq* Get_ui_key_view_toolbars()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TOOLBARS);
 }
 
-input_seq* Get_ui_key_view_tab_cabinet(void)
+input_seq* Get_ui_key_view_tab_cabinet()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_CABINET);
 }
 
-input_seq* Get_ui_key_view_tab_cpanel(void)
+input_seq* Get_ui_key_view_tab_cpanel()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_CPANEL);
 }
 
-input_seq* Get_ui_key_view_tab_flyer(void)
+input_seq* Get_ui_key_view_tab_flyer()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_FLYER);
 }
 
-input_seq* Get_ui_key_view_tab_history(void)
+input_seq* Get_ui_key_view_tab_history()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_HISTORY);
 }
 
-input_seq* Get_ui_key_view_tab_marquee(void)
+input_seq* Get_ui_key_view_tab_marquee()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_MARQUEE);
 }
 
-input_seq* Get_ui_key_view_tab_screenshot(void)
+input_seq* Get_ui_key_view_tab_screenshot()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_SCREENSHOT);
 }
 
-input_seq* Get_ui_key_view_tab_title(void)
+input_seq* Get_ui_key_view_tab_title()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_TITLE);
 }
 
-input_seq* Get_ui_key_view_tab_pcb(void)
+input_seq* Get_ui_key_view_tab_pcb()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_VIEW_TAB_PCB);
 }
 
-input_seq* Get_ui_key_quit(void)
+input_seq* Get_ui_key_quit()
 {
 	return options_get_input_seq(MUIOPTION_UI_KEY_QUIT);
 }
@@ -1157,7 +1167,7 @@ int GetUIJoyExec(int joycodeIndex)
 	return GetUIJoy(MUIOPTION_UI_JOY_EXEC, joycodeIndex);
 }
 
-const string GetExecCommand(void)
+const string GetExecCommand()
 {
 	return settings.getter(MUIOPTION_EXEC_COMMAND);
 }
@@ -1168,7 +1178,7 @@ void SetExecCommand(char *cmd)
 	settings.setter(MUIOPTION_EXEC_COMMAND, cmd);
 }
 
-int GetExecWait(void)
+int GetExecWait()
 {
 	return settings.int_value(MUIOPTION_EXEC_WAIT);
 }
@@ -1179,7 +1189,7 @@ void SetExecWait(int wait)
 }
 // exec functions end
 
-BOOL GetHideMouseOnStartup(void)
+BOOL GetHideMouseOnStartup()
 {
 	return settings.bool_value(MUIOPTION_HIDE_MOUSE);
 }
@@ -1189,7 +1199,7 @@ void SetHideMouseOnStartup(BOOL hide)
 	settings.setter(MUIOPTION_HIDE_MOUSE, hide);
 }
 
-BOOL GetRunFullScreen(void)
+BOOL GetRunFullScreen()
 {
 	return settings.bool_value( MUIOPTION_FULL_SCREEN);
 }
@@ -1451,7 +1461,7 @@ DWORD GetFolderFlags(int folder_index)
  * Read the folder filters from MAMEui.ini.  This must only
  * be called AFTER the folders have all been created.
  */
-void LoadFolderFlags(void)
+void LoadFolderFlags()
 {
 	LPTREEFOLDER lpFolder;
 	int i, numFolders = GetNumFolders();
@@ -1548,20 +1558,20 @@ static void AddFolderFlags()
 }
 
 // Save MAMEUI.ini
-void mui_save_ini(void)
+void mui_save_ini()
 {
 	// Add the folder flag to settings.
 	AddFolderFlags();
 	settings.save_file(MUI_INI_FILENAME);
 }
 
-void SaveGameListOptions(void)
+void SaveGameListOptions()
 {
 	// Save GameInfo.ini - game options.
 	game_opts.save_file(GAMEINFO_INI_FILENAME);
 }
 
-const char * GetVersionString(void)
+const char * GetVersionString()
 {
 	return emulator_info::get_build_version();
 }
@@ -1581,12 +1591,12 @@ void SetDriverCache(uint32_t driver_index, uint32_t val)
 	game_opts.cache_upper(driver_index, val);
 }
 
-BOOL RequiredDriverCache(void)
+BOOL RequiredDriverCache()
 {
 	return game_opts.rebuild();
 }
 
-void ForceRebuild(void)
+void ForceRebuild()
 {
 	game_opts.force_rebuild();
 }
@@ -1653,7 +1663,7 @@ void SetSLSortColumn(int column)
 	settings.setter(MESSUI_SL_SORT_COLUMN, column);
 }
 
-int GetSLSortColumn(void)
+int GetSLSortColumn()
 {
 	return settings.int_value(MESSUI_SL_SORT_COLUMN);
 }
@@ -1663,7 +1673,7 @@ void SetSLSortReverse(BOOL reverse)
 	settings.setter(MESSUI_SL_SORT_REVERSED, reverse);
 }
 
-BOOL GetSLSortReverse(void)
+BOOL GetSLSortReverse()
 {
 	return settings.bool_value(MESSUI_SL_SORT_REVERSED);
 }
@@ -1703,7 +1713,7 @@ void SetSWSortColumn(int column)
 	settings.setter(MESSUI_SW_SORT_COLUMN, column);
 }
 
-int GetSWSortColumn(void)
+int GetSWSortColumn()
 {
 	return settings.int_value(MESSUI_SW_SORT_COLUMN);
 }
@@ -1713,7 +1723,7 @@ void SetSWSortReverse(BOOL reverse)
 	settings.setter( MESSUI_SW_SORT_REVERSED, reverse);
 }
 
-BOOL GetSWSortReverse(void)
+BOOL GetSWSortReverse()
 {
 	return settings.bool_value(MESSUI_SW_SORT_REVERSED);
 }
@@ -1724,7 +1734,7 @@ void SetCurrentSoftwareTab(int val)
 	settings.setter(MESSUI_SOFTWARE_TAB, val);
 }
 
-int GetCurrentSoftwareTab(void)
+int GetCurrentSoftwareTab()
 {
 	return settings.int_value(MESSUI_SOFTWARE_TAB);
 }

@@ -67,8 +67,9 @@ typedef std::string string;
 typedef BOOL (WINAPI *common_file_dialog_proc)(LPOPENFILENAME lpofn);
 BOOL CommonFileDialog(common_file_dialog_proc cfd,char *filename, int filetype);
 
-HWND GetMainWindow(void);
-HWND GetTreeView(void);
+HWND GetMainWindow();
+HWND GetTreeView();
+HWND GetProgressBar();
 HIMAGELIST GetLargeImageList(void);
 HIMAGELIST GetSmallImageList(void);
 void SetNumOptionFolders(int count);

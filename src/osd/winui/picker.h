@@ -47,14 +47,10 @@ struct PickerOptions
 
 enum
 {
-	VIEW_LARGE_ICONS = 0,
-	VIEW_SMALL_ICONS,
-	VIEW_INLIST,
-	VIEW_REPORT,
-	VIEW_GROUPED,
+	VIEW_ICONS_LARGE = 0,
+	VIEW_ICONS_SMALL,
 	VIEW_MAX
 };
-
 
 
 BOOL SetupPicker(HWND hwndPicker, const struct PickerOptions *pOptions);

@@ -135,7 +135,7 @@ function osdmodulesbuild()
 		}
 	end
 
-	if _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		includedirs {
 			MAME_DIR .. "3rdparty/winpcap/Include",
 			MAME_DIR .. "3rdparty/compat/mingw",
@@ -403,7 +403,7 @@ function qtdebuggerbuild()
 
 		}
 
-		if _OPTIONS["targetos"]=="windows" then
+		if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 			configuration { "mingw*" }
 				buildoptions {
 					"-I$(shell qmake -query QT_INSTALL_HEADERS)",
@@ -441,7 +441,7 @@ function osdmodulestargetconf()
 				"OpenGL.framework",
 			}
 		elseif _OPTIONS["USE_DISPATCH_GL"]~="1" then
-			if _OPTIONS["targetos"]=="windows" then
+			if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 				links {
 					"opengl32",
 				}
@@ -466,7 +466,7 @@ function osdmodulestargetconf()
 	end
 
 	if _OPTIONS["USE_QTDEBUG"]=="1" then
-		if _OPTIONS["targetos"]=="windows" then
+		if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 			linkoptions {
 				"-L$(shell qmake -query QT_INSTALL_LIBS)",
 			}
@@ -502,7 +502,7 @@ function osdmodulestargetconf()
 		end
 	end
 
-	if _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		links {
 			"gdi32",
 			"dsound",
@@ -594,7 +594,7 @@ newoption {
 }
 
 if not _OPTIONS["NO_USE_PORTAUDIO"] then
-	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="macosx" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" or _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="macosx" then
 		_OPTIONS["NO_USE_PORTAUDIO"] = "0"
 	else
 		_OPTIONS["NO_USE_PORTAUDIO"] = "1"
@@ -643,7 +643,7 @@ newoption {
 
 
 if not _OPTIONS["USE_TAPTUN"] then
-	if _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="windows" then
+	if _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
 		_OPTIONS["USE_TAPTUN"] = "1"
 	else
 		_OPTIONS["USE_TAPTUN"] = "0"
@@ -659,7 +659,7 @@ if not _OPTIONS["USE_PCAP"] then
 end
 
 if not _OPTIONS["USE_QTDEBUG"] then
-	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="solaris" or _OPTIONS["targetos"]=="haiku" or _OPTIONS["targetos"]=="asmjs" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" or _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="solaris" or _OPTIONS["targetos"]=="haiku" or _OPTIONS["targetos"]=="asmjs" then
 		_OPTIONS["USE_QTDEBUG"] = "0"
 	else
 		_OPTIONS["USE_QTDEBUG"] = "1"

@@ -542,11 +542,8 @@
 #define ID_ABOUT                        40003
 #define ID_FILE_PLAY                    40004
 #define ID_HELP_ABOUT                   40006
-#define ID_VIEW_LARGE_ICON              40007
-#define ID_VIEW_SMALL_ICON              40008
-#define ID_VIEW_LIST_MENU               40009
-#define ID_VIEW_DETAIL                  40010
-#define ID_VIEW_GROUPED                 40011
+#define ID_VIEW_ICONS_LARGE             40009
+#define ID_VIEW_ICONS_SMALL             40010
 #define ID_OPTIONS_FONT                 40012
 #define ID_OPTIONS_CLONE_COLOR          40013
 #define ID_OPTIONS_DIR                  40014
@@ -620,6 +617,7 @@
 #define ID_PLAY_M1                      40113
 #define ID_NOTEPAD                      40114
 #define ID_RC_CLEAN                     40115
+#define ID_ENABLE_INDENT                40117
 #define ID_VIEW_TAB_ARTWORK             40120
 #define ID_VIEW_TAB_BOSSES              40121
 #define ID_VIEW_TAB_CABINET             40122

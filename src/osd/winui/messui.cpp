@@ -333,7 +333,7 @@ void InitMessPicker(void)
 	SetupSoftwarePicker(hwndSoftware, &opts); // display them
 
 	printf("InitMessPicker: C\n");fflush(stdout);
-	SetWindowLong(hwndSoftware, GWL_STYLE, GetWindowLong(hwndSoftware, GWL_STYLE) | LVS_REPORT | LVS_SHOWSELALWAYS | LVS_OWNERDRAWFIXED);
+	//SetWindowLong(hwndSoftware, GWL_STYLE, GetWindowLong(hwndSoftware, GWL_STYLE) | LVS_REPORT | LVS_SHOWSELALWAYS );
 
 	printf("InitMessPicker: D\n");fflush(stdout);
 	SetupSoftwareTabView();
@@ -362,7 +362,7 @@ void InitMessPicker(void)
 	SetupSoftwareList(hwndSoftwareList, &opts); // show them
 
 	printf("InitMessPicker: J\n");fflush(stdout);
-	SetWindowLong(hwndSoftwareList, GWL_STYLE, GetWindowLong(hwndSoftwareList, GWL_STYLE) | LVS_REPORT | LVS_SHOWSELALWAYS | LVS_OWNERDRAWFIXED);
+	//SetWindowLong(hwndSoftwareList, GWL_STYLE, GetWindowLong(hwndSoftwareList, GWL_STYLE) | LVS_REPORT | LVS_SHOWSELALWAYS );
 	printf("InitMessPicker: Finished\n");fflush(stdout);
 
 	BOOL bShowSoftware = BIT(GetWindowPanes(), 2);
