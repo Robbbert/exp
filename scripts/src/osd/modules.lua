@@ -55,74 +55,84 @@ function osdmodulesbuild()
 		MAME_DIR .. "src/osd/watchdog.cpp",
 		MAME_DIR .. "src/osd/watchdog.h",
 		MAME_DIR .. "src/osd/interface/inputcode.h",
+		MAME_DIR .. "src/osd/interface/inputdev.h",
+		MAME_DIR .. "src/osd/interface/inputfwd.h",
 		MAME_DIR .. "src/osd/interface/inputman.h",
 		MAME_DIR .. "src/osd/interface/inputseq.cpp",
 		MAME_DIR .. "src/osd/interface/inputseq.h",
 		MAME_DIR .. "src/osd/modules/debugger/debug_module.h",
-		MAME_DIR .. "src/osd/modules/font/font_module.h",
-		MAME_DIR .. "src/osd/modules/midi/midi_module.h",
-		MAME_DIR .. "src/osd/modules/netdev/netdev_module.h",
-		MAME_DIR .. "src/osd/modules/sound/sound_module.h",
-		MAME_DIR .. "src/osd/modules/diagnostics/diagnostics_module.h",
-		MAME_DIR .. "src/osd/modules/monitor/monitor_module.h",
-		MAME_DIR .. "src/osd/modules/lib/osdobj_common.cpp",
-		MAME_DIR .. "src/osd/modules/lib/osdobj_common.h",
-		MAME_DIR .. "src/osd/modules/diagnostics/none.cpp",
-		MAME_DIR .. "src/osd/modules/diagnostics/diagnostics_win32.cpp",
-		MAME_DIR .. "src/osd/modules/debugger/none.cpp",
-		MAME_DIR .. "src/osd/modules/debugger/debugwin.cpp",
-		MAME_DIR .. "src/osd/modules/debugger/debugimgui.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/debuggdbstub.cpp",
+		MAME_DIR .. "src/osd/modules/debugger/debugimgui.cpp",
+		MAME_DIR .. "src/osd/modules/debugger/debugwin.cpp",
+		MAME_DIR .. "src/osd/modules/debugger/none.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/xmlconfig.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/xmlconfig.h",
+		MAME_DIR .. "src/osd/modules/diagnostics/diagnostics_module.h",
+		MAME_DIR .. "src/osd/modules/diagnostics/diagnostics_win32.cpp",
+		MAME_DIR .. "src/osd/modules/diagnostics/none.cpp",
+		MAME_DIR .. "src/osd/modules/font/font_dwrite.cpp",
+		MAME_DIR .. "src/osd/modules/font/font_module.h",
+		MAME_DIR .. "src/osd/modules/font/font_none.cpp",
+		MAME_DIR .. "src/osd/modules/font/font_osx.cpp",
 		MAME_DIR .. "src/osd/modules/font/font_sdl.cpp",
 		MAME_DIR .. "src/osd/modules/font/font_windows.cpp",
-		MAME_DIR .. "src/osd/modules/font/font_dwrite.cpp",
-		MAME_DIR .. "src/osd/modules/font/font_osx.cpp",
-		MAME_DIR .. "src/osd/modules/font/font_none.cpp",
-		MAME_DIR .. "src/osd/modules/netdev/taptun.cpp",
-		MAME_DIR .. "src/osd/modules/netdev/pcap.cpp",
-		MAME_DIR .. "src/osd/modules/netdev/none.cpp",
-		MAME_DIR .. "src/osd/modules/midi/portmidi.cpp",
-		MAME_DIR .. "src/osd/modules/midi/none.cpp",
-		MAME_DIR .. "src/osd/modules/sound/js_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/direct_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/pa_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/pulse_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/coreaudio_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/sdl_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/xaudio2_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/none.cpp",
-		MAME_DIR .. "src/osd/modules/input/input_module.h",
+		MAME_DIR .. "src/osd/modules/input/assignmenthelper.cpp",
+		MAME_DIR .. "src/osd/modules/input/assignmenthelper.h",
 		MAME_DIR .. "src/osd/modules/input/input_common.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_common.h",
 		MAME_DIR .. "src/osd/modules/input/input_dinput.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_dinput.h",
+		MAME_DIR .. "src/osd/modules/input/input_mac.cpp",
+		MAME_DIR .. "src/osd/modules/input/input_module.h",
 		MAME_DIR .. "src/osd/modules/input/input_none.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_rawinput.cpp",
-		MAME_DIR .. "src/osd/modules/input/input_win32.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_sdl.cpp",
-		MAME_DIR .. "src/osd/modules/input/input_sdlcommon.cpp",
-		MAME_DIR .. "src/osd/modules/input/input_sdlcommon.h",
-		MAME_DIR .. "src/osd/modules/input/input_x11.cpp",
+		MAME_DIR .. "src/osd/modules/input/input_win32.cpp",
+		MAME_DIR .. "src/osd/modules/input/input_wincommon.h",
 		MAME_DIR .. "src/osd/modules/input/input_windows.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_windows.h",
+		MAME_DIR .. "src/osd/modules/input/input_winhybrid.cpp",
+		MAME_DIR .. "src/osd/modules/input/input_x11.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_xinput.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_xinput.h",
-		MAME_DIR .. "src/osd/modules/input/input_winhybrid.cpp",
-		MAME_DIR .. "src/osd/modules/input/input_mac.cpp",
-		MAME_DIR .. "src/osd/modules/output/output_module.h",
-		MAME_DIR .. "src/osd/modules/output/none.cpp",
+		MAME_DIR .. "src/osd/modules/lib/osdobj_common.cpp",
+		MAME_DIR .. "src/osd/modules/lib/osdobj_common.h",
+		MAME_DIR .. "src/osd/modules/midi/midi_module.h",
+		MAME_DIR .. "src/osd/modules/midi/none.cpp",
+		MAME_DIR .. "src/osd/modules/midi/portmidi.cpp",
+		MAME_DIR .. "src/osd/modules/monitor/monitor_common.cpp",
+		MAME_DIR .. "src/osd/modules/monitor/monitor_common.h",
+		MAME_DIR .. "src/osd/modules/monitor/monitor_dxgi.cpp",
+		MAME_DIR .. "src/osd/modules/monitor/monitor_mac.cpp",
+		MAME_DIR .. "src/osd/modules/monitor/monitor_module.h",
+		MAME_DIR .. "src/osd/modules/monitor/monitor_sdl.cpp",
+		MAME_DIR .. "src/osd/modules/monitor/monitor_win32.cpp",
+		MAME_DIR .. "src/osd/modules/netdev/netdev_module.h",
+		MAME_DIR .. "src/osd/modules/netdev/none.cpp",
+		MAME_DIR .. "src/osd/modules/netdev/pcap.cpp",
+		MAME_DIR .. "src/osd/modules/netdev/taptun.cpp",
 		MAME_DIR .. "src/osd/modules/output/console.cpp",
 		MAME_DIR .. "src/osd/modules/output/network.cpp",
+		MAME_DIR .. "src/osd/modules/output/none.cpp",
+		MAME_DIR .. "src/osd/modules/output/output_module.h",
 		MAME_DIR .. "src/osd/modules/output/win32_output.cpp",
 		MAME_DIR .. "src/osd/modules/output/win32_output.h",
-		MAME_DIR .. "src/osd/modules/monitor/monitor_common.h",
-		MAME_DIR .. "src/osd/modules/monitor/monitor_common.cpp",
-		MAME_DIR .. "src/osd/modules/monitor/monitor_win32.cpp",
-		MAME_DIR .. "src/osd/modules/monitor/monitor_dxgi.cpp",
-		MAME_DIR .. "src/osd/modules/monitor/monitor_sdl.cpp",
-		MAME_DIR .. "src/osd/modules/monitor/monitor_mac.cpp",
+		MAME_DIR .. "src/osd/modules/render/blit13.ipp",
+		MAME_DIR .. "src/osd/modules/render/draw13.cpp",
+		MAME_DIR .. "src/osd/modules/render/drawgdi.cpp",
+		MAME_DIR .. "src/osd/modules/render/drawnone.cpp",
+		MAME_DIR .. "src/osd/modules/render/drawogl.cpp",
+		MAME_DIR .. "src/osd/modules/render/drawsdl.cpp",
+		MAME_DIR .. "src/osd/modules/render/render_module.h",
+		MAME_DIR .. "src/osd/modules/sound/coreaudio_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/direct_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/js_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/none.cpp",
+		MAME_DIR .. "src/osd/modules/sound/pa_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/pulse_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/sdl_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/sound_module.h",
+		MAME_DIR .. "src/osd/modules/sound/xaudio2_sound.cpp",
 	}
 	includedirs {
 		MAME_DIR .. "src/osd",
@@ -135,9 +145,8 @@ function osdmodulesbuild()
 		}
 	end
 
-	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="winui" or _OPTIONS["targetos"]=="messui" then
 		includedirs {
-			MAME_DIR .. "3rdparty/winpcap/Include",
 			MAME_DIR .. "3rdparty/compat/mingw",
 			MAME_DIR .. "3rdparty/portaudio/include",
 		}
@@ -153,7 +162,6 @@ function osdmodulesbuild()
 		}
 	else
 		files {
-			MAME_DIR .. "src/osd/modules/render/drawogl.cpp",
 			MAME_DIR .. "src/osd/modules/opengl/gl_shader_tool.cpp",
 			MAME_DIR .. "src/osd/modules/opengl/gl_shader_mgr.cpp",
 			MAME_DIR .. "src/osd/modules/opengl/gl_shader_mgr.h",
@@ -174,6 +182,7 @@ function osdmodulesbuild()
 		"__STDC_LIMIT_MACROS",
 		"__STDC_FORMAT_MACROS",
 		"__STDC_CONSTANT_MACROS",
+		"BX_CONFIG_DEBUG=0",
 	}
 
 	files {
@@ -319,11 +328,9 @@ function qtdebuggerbuild()
 	local version = str_to_version(_OPTIONS["gcc_version"])
 	if _OPTIONS["gcc"]~=nil and (string.find(_OPTIONS["gcc"], "clang") or string.find(_OPTIONS["gcc"], "asmjs")) then
 		configuration { "gmake or ninja" }
-			if (version >= 30600) then
-				buildoptions {
-					"-Wno-inconsistent-missing-override",
-				}
-			end
+			buildoptions {
+				"-Wno-error=inconsistent-missing-override",
+			}
 		configuration { }
 	end
 
@@ -403,7 +410,7 @@ function qtdebuggerbuild()
 
 		}
 
-		if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
+		if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="winui" or _OPTIONS["targetos"]=="messui" then
 			configuration { "mingw*" }
 				buildoptions {
 					"-I$(shell qmake -query QT_INSTALL_HEADERS)",
@@ -441,7 +448,7 @@ function osdmodulestargetconf()
 				"OpenGL.framework",
 			}
 		elseif _OPTIONS["USE_DISPATCH_GL"]~="1" then
-			if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
+			if _OPTIONS["targetos"]=="windows" then
 				links {
 					"opengl32",
 				}
@@ -466,7 +473,7 @@ function osdmodulestargetconf()
 	end
 
 	if _OPTIONS["USE_QTDEBUG"]=="1" then
-		if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
+		if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="winui" or _OPTIONS["targetos"]=="messui" then
 			linkoptions {
 				"-L$(shell qmake -query QT_INSTALL_LIBS)",
 			}
@@ -502,7 +509,7 @@ function osdmodulestargetconf()
 		end
 	end
 
-	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="winui" or _OPTIONS["targetos"]=="messui" then
 		links {
 			"gdi32",
 			"dsound",
@@ -554,6 +561,14 @@ newoption {
 	},
 }
 
+if not _OPTIONS["NO_OPENGL"] then
+	if _OPTIONS["targetos"] == "android" then
+		_OPTIONS["NO_OPENGL"] = "1"
+	else
+		_OPTIONS["NO_OPENGL"] = "0"
+	end
+end
+
 newoption {
 	trigger = "USE_DISPATCH_GL",
 	description = "Use GL-dispatching",
@@ -577,7 +592,7 @@ newoption {
 }
 
 if not _OPTIONS["NO_USE_MIDI"] then
-	if _OPTIONS["targetos"]=="freebsd" or _OPTIONS["targetos"]=="openbsd" or _OPTIONS["targetos"]=="netbsd" or _OPTIONS["targetos"]=="solaris" or _OPTIONS["targetos"]=="haiku" or _OPTIONS["targetos"] == "asmjs" then
+	if _OPTIONS["targetos"]=="freebsd" or _OPTIONS["targetos"]=="openbsd" or _OPTIONS["targetos"]=="netbsd" or _OPTIONS["targetos"]=="solaris" or _OPTIONS["targetos"]=="haiku" or _OPTIONS["targetos"] == "asmjs" or _OPTIONS["targetos"] == "android" then
 		_OPTIONS["NO_USE_MIDI"] = "1"
 	else
 		_OPTIONS["NO_USE_MIDI"] = "0"
@@ -594,7 +609,7 @@ newoption {
 }
 
 if not _OPTIONS["NO_USE_PORTAUDIO"] then
-	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" or _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="macosx" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="macosx" then
 		_OPTIONS["NO_USE_PORTAUDIO"] = "0"
 	else
 		_OPTIONS["NO_USE_PORTAUDIO"] = "1"
@@ -643,7 +658,7 @@ newoption {
 
 
 if not _OPTIONS["USE_TAPTUN"] then
-	if _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" then
+	if _OPTIONS["targetos"]=="linux" or _OPTIONS["targetos"]=="windows" then
 		_OPTIONS["USE_TAPTUN"] = "1"
 	else
 		_OPTIONS["USE_TAPTUN"] = "0"
@@ -659,7 +674,7 @@ if not _OPTIONS["USE_PCAP"] then
 end
 
 if not _OPTIONS["USE_QTDEBUG"] then
-	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="newui" or _OPTIONS["targetos"]=="messui" or _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="solaris" or _OPTIONS["targetos"]=="haiku" or _OPTIONS["targetos"]=="asmjs" then
+	if _OPTIONS["targetos"]=="windows" or _OPTIONS["targetos"]=="winui" or _OPTIONS["targetos"]=="macosx" or _OPTIONS["targetos"]=="solaris" or _OPTIONS["targetos"]=="haiku" or _OPTIONS["targetos"]=="asmjs" or _OPTIONS["targetos"]=="android" then
 		_OPTIONS["USE_QTDEBUG"] = "0"
 	else
 		_OPTIONS["USE_QTDEBUG"] = "1"

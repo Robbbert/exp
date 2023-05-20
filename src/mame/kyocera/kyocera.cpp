@@ -61,8 +61,11 @@
 
 #include "emu.h"
 #include "kyocera.h"
+
 #include "softlist_dev.h"
 #include "speaker.h"
+
+#include "utf8.h"
 
 /* Read/Write Handlers */
 
@@ -1358,7 +1361,7 @@ void kc85_state::kc85(machine_config &config)
 	m_uart->dr_callback().set_inputline(m_maincpu, I8085_RST65_LINE);
 
 	rs232_port_device &rs232(RS232_PORT(config, RS232_TAG, default_rs232_devices, nullptr));
-	rs232.rxd_handler().set(m_uart, FUNC(im6402_device::write_rri));
+	rs232.rxd_handler().set(m_uart, FUNC(im6402_device::rri_w));
 
 	CENTRONICS(config, m_centronics, centronics_devices, "printer");
 	m_centronics->busy_handler().set(FUNC(kc85_state::write_centronics_busy));
@@ -1409,7 +1412,7 @@ void pc8201_state::pc8201(machine_config &config)
 	m_uart->dr_callback().set_inputline(m_maincpu, I8085_RST65_LINE);
 
 	rs232_port_device &rs232(RS232_PORT(config, RS232_TAG, default_rs232_devices, nullptr));
-	rs232.rxd_handler().set(m_uart, FUNC(im6402_device::write_rri));
+	rs232.rxd_handler().set(m_uart, FUNC(im6402_device::rri_w));
 
 	CENTRONICS(config, m_centronics, centronics_devices, "printer");
 	m_centronics->busy_handler().set(FUNC(pc8201_state::write_centronics_busy));
@@ -1469,7 +1472,7 @@ void trsm100_state::trsm100(machine_config &config)
 	m_uart->dr_callback().set_inputline(m_maincpu, I8085_RST65_LINE);
 
 	rs232_port_device &rs232(RS232_PORT(config, RS232_TAG, default_rs232_devices, nullptr));
-	rs232.rxd_handler().set(m_uart, FUNC(im6402_device::write_rri));
+	rs232.rxd_handler().set(m_uart, FUNC(im6402_device::rx_w));
 
 	CENTRONICS(config, m_centronics, centronics_devices, "printer");
 

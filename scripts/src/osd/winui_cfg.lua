@@ -11,17 +11,6 @@ defines {
 	"NOMINMAX",
 }
 
-configuration { "mingw*-gcc or vs*" }
-	defines {
-		"UNICODE",
-		"_UNICODE",
-	}
-
-configuration { "Debug" }
-	defines {
-		"MALLOC_DEBUG",
-	}
-
 configuration { "vs*" }
 	flags {
 		"Unicode",

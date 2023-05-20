@@ -1513,8 +1513,7 @@ void hyperstone_device::hyperstone_rol()
 	const uint32_t mask = (uint32_t)(0xffffffff00000000ULL >> n);
 #endif
 
-	if (n)
-		val = (val << n) | (val >> (32 - n));
+	val = rotl_32(val, n);
 
 #ifdef MISSIONCRAFT_FLAGS
 	SR &= ~(V_MASK | Z_MASK | C_MASK | N_MASK);
@@ -2213,11 +2212,6 @@ void hyperstone_device::hyperstone_mul()
 		m_core->icount -= 3 << m_core->clck_scale;
 }
 
-static inline int32_t mul_16x16(int16_t halfd, int16_t halfs)
-{
-	return (int32_t)halfd * (int32_t)halfs;
-}
-
 void hyperstone_device::hyperstone_extend()
 {
 	m_instruction_length = (2<<19);
@@ -2270,27 +2264,27 @@ void hyperstone_device::hyperstone_extend()
 
 		// signed half-word multiply/add, single word product sum
 		case EHMAC:
-			m_core->global_regs[15] = (int32_t)m_core->global_regs[15] + mul_16x16(vald >> 16, vals >> 16) + mul_16x16(vald & 0xffff, vals & 0xffff);
+			m_core->global_regs[15] = m_core->global_regs[15] + get_lhs(vald) * get_lhs(vals) + get_rhs(vald) * get_rhs(vals);
 			break;
 
 		// signed half-word multiply/add, double word product sum
 		case EHMACD:
 		{
-			int64_t result = get_double_word<GLOBAL>(14, 15) + (int64_t)mul_16x16(vald >> 16, vals >> 16) + (int64_t)mul_16x16(vald & 0xffff, vals & 0xffff);
+			int64_t result = get_double_word<GLOBAL>(14, 15) + int64_t(get_lhs(vald) * get_lhs(vals)) + int64_t(get_rhs(vald) * get_rhs(vals));
 			set_double_word<GLOBAL>(14, 15, result);
 			break;
 		}
 
 		// half-word complex multiply
 		case EHCMULD:
-			m_core->global_regs[14] = mul_16x16(vald >> 16, vals >> 16    ) - mul_16x16(vald & 0xffff, vals & 0xffff);
-			m_core->global_regs[15] = mul_16x16(vald >> 16, vals &  0xffff) + mul_16x16(vald & 0xffff, vals >> 16   );
+			m_core->global_regs[14] = get_lhs(vald) * get_lhs(vals) - get_rhs(vald) * get_rhs(vals);
+			m_core->global_regs[15] = get_lhs(vald) * get_rhs(vals) + get_rhs(vald) * get_lhs(vals);
 			break;
 
 		// half-word complex multiply/add
 		case EHCMACD:
-			m_core->global_regs[14] += mul_16x16(vald >> 16, vals >> 16    ) - mul_16x16(vald & 0xffff, vals &  0xffff);
-			m_core->global_regs[15] += mul_16x16(vald >> 16, vals &  0xffff) + mul_16x16(vald & 0xffff, vals >> 16    );
+			m_core->global_regs[14] += get_lhs(vald) * get_lhs(vals) - get_rhs(vald) * get_rhs(vals);
+			m_core->global_regs[15] += get_lhs(vald) * get_rhs(vals) + get_rhs(vald) * get_lhs(vals);
 			break;
 
 		// half-word (complex) add/subtract

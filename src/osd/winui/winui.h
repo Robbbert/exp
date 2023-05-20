@@ -14,21 +14,13 @@
 // Make sure all MESS features are included, and include software panes
 #define MESS
 
-/////////////////////// Next line must be commented out manually as there is no compile define
-#define BUILD_MESS
-
-#ifdef BUILD_MESS
-#define MAMENAME "MESS"
-#define MUI_INI_FILENAME "MESSUI.ini"
-#else
 #define MAMENAME "MAME"
 #define MUI_INI_FILENAME "MAMEUI.ini"
-#endif
 
 #ifdef PTR64
-#define MAMEUINAME MAMENAME "UI"
+#define MAMEUINAME MAMENAME "UI64 exp"
 #else
-#define MAMEUINAME MAMENAME "UI32"
+#define MAMEUINAME MAMENAME "UI32 exp"
 #endif
 
 #define SEARCH_PROMPT "<search here>"

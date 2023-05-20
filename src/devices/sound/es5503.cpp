@@ -77,10 +77,11 @@ TIMER_CALLBACK_MEMBER(es5503_device::delayed_stream_update)
 }
 
 //-------------------------------------------------
-//  rom_bank_updated - the rom bank has changed
+//  rom_bank_pre_change - refresh the stream if the
+//  ROM banking changes
 //-------------------------------------------------
 
-void es5503_device::rom_bank_updated()
+void es5503_device::rom_bank_pre_change()
 {
 	m_stream->update();
 }
@@ -103,18 +104,7 @@ void es5503_device::halt_osc(int onum, int type, uint32_t *accumulator, int ress
 	else    // preserve the relative phase of the oscillator when looping
 	{
 		uint16_t wtsize = pOsc->wtsize - 1;
-		uint32_t altram = (*accumulator) >> resshift;
-
-		if (altram > wtsize)
-		{
-			altram -= wtsize;
-		}
-		else
-		{
-			altram = 0;
-		}
-
-		*accumulator = altram << resshift;
+		*accumulator -= (wtsize << resshift);
 	}
 
 	// if we're in swap mode, start the partner
@@ -133,17 +123,7 @@ void es5503_device::halt_osc(int onum, int type, uint32_t *accumulator, int ress
 
 			// preserve the phase in this case too
 			uint16_t wtsize = pOsc->wtsize - 1;
-			uint32_t altram = (*accumulator) >> resshift;
-			if (altram > wtsize)
-			{
-				altram -= wtsize;
-			}
-			else
-			{
-				altram = 0;
-			}
-
-			*accumulator = altram << resshift;
+			*accumulator -= (wtsize << resshift);
 		}
 	}
 	// IRQ enabled for this voice?

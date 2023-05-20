@@ -1,7 +1,7 @@
 // license:BSD-3-Clause
 // copyright-holders:hap
 // thanks-to:Berger
-/******************************************************************************
+/*******************************************************************************
 
 AVE Micro Systems ARB chess computer driver, in some regions redistributed
 by Chafitz, and in Germany by Sandy Electronic.
@@ -36,11 +36,9 @@ boards without a module slot. CPU and VIA were replaced with new WDC 14MHz-rated
 chips, running at 16MHz.
 
 TODO:
-- remove install_ram workaround when emumem bug is fixed, see:
-  https://github.com/mamedev/mame/commit/75caceb1c143757d10f874b0c2ebf0427f4dfc9f#commitcomment-84413054
 - avelan, gms3, gms4, sargon35 rom labels
 
-******************************************************************************/
+*******************************************************************************/
 
 #include "emu.h"
 
@@ -83,7 +81,6 @@ public:
 	DECLARE_INPUT_CHANGED_MEMBER(halt_button) { m_maincpu->set_input_line(M6502_NMI_LINE, newval ? ASSERT_LINE : CLEAR_LINE); update_reset(); }
 	void update_reset();
 
-	// machine configs
 	void arb(machine_config &config);
 	void v2(machine_config &config);
 
@@ -101,20 +98,14 @@ private:
 	optional_device<generic_slot_device> m_cart;
 	required_ioport_array<2> m_inputs;
 
-	// address maps
 	void main_map(address_map &map);
 	void v2_map(address_map &map);
 
-	// sensorboard
 	void init_board(int state);
 	bool m_altboard = false;
 
-	// cartridge
 	DECLARE_DEVICE_IMAGE_LOAD_MEMBER(cart_load);
-	u8 cartridge_r(offs_t offset);
-	u32 m_cart_mask;
 
-	// I/O handlers
 	void update_display();
 	void leds_w(u8 data);
 	void control_w(u8 data);
@@ -149,9 +140,9 @@ void arb_state::update_reset()
 
 
 
-/******************************************************************************
+/*******************************************************************************
     I/O
-******************************************************************************/
+*******************************************************************************/
 
 // sensorboard
 
@@ -174,27 +165,16 @@ void arb_state::init_board(int state)
 DEVICE_IMAGE_LOAD_MEMBER(arb_state::cart_load)
 {
 	u32 size = m_cart->common_get_size("rom");
-	m_cart_mask = ((1 << (31 - count_leading_zeros_32(size))) - 1) & 0x7fff;
-
 	m_cart->rom_alloc(size, GENERIC_ROM8_WIDTH, ENDIANNESS_LITTLE);
 	m_cart->common_load_rom(m_cart->get_rom_base(), size, "rom");
 
 	// extra ram (optional)
 	if (image.get_feature("ram"))
-	{
-		//m_maincpu->space(AS_PROGRAM).install_ram(0x0800, 0x0fff, 0x1000, m_extram);
-		m_maincpu->space(AS_PROGRAM).install_ram(0x0800, 0x0fff, 0, m_extram);
-		m_maincpu->space(AS_PROGRAM).install_ram(0x1800, 0x1fff, 0, m_extram);
-	}
+		m_maincpu->space(AS_PROGRAM).install_ram(0x0800, 0x0fff, 0x1000, m_extram);
 
 	m_altboard = bool(image.get_feature("altboard"));
 
-	return image_init_result::PASS;
-}
-
-u8 arb_state::cartridge_r(offs_t offset)
-{
-	return m_cart->read_rom(offset & m_cart_mask);
+	return std::make_pair(std::error_condition(), std::string());
 }
 
 
@@ -248,14 +228,14 @@ u8 arb_state::input_r()
 
 
 
-/******************************************************************************
+/*******************************************************************************
     Address Maps
-******************************************************************************/
+*******************************************************************************/
 
 void arb_state::main_map(address_map &map)
 {
 	// external slot is A0-A14, potential bus conflict with RAM/VIA
-	map(0x0000, 0x7fff).mirror(0x8000).r(FUNC(arb_state::cartridge_r));
+	map(0x0000, 0x7fff).mirror(0x8000).r(m_cart, FUNC(generic_slot_device::read_rom));
 	map(0x0000, 0x07ff).mirror(0x1000).ram().share("nvram");
 	map(0x8000, 0x800f).mirror(0x1ff0).m(m_via, FUNC(via6522_device::map));
 }
@@ -269,9 +249,9 @@ void arb_state::v2_map(address_map &map)
 
 
 
-/******************************************************************************
+/*******************************************************************************
     Input Ports
-******************************************************************************/
+*******************************************************************************/
 
 static INPUT_PORTS_START( arb )
 	PORT_START("IN.0")
@@ -294,13 +274,13 @@ INPUT_PORTS_END
 
 
 
-/******************************************************************************
+/*******************************************************************************
     Machine Configs
-******************************************************************************/
+*******************************************************************************/
 
 void arb_state::v2(machine_config &config)
 {
-	/* basic machine hardware */
+	// basic machine hardware
 	W65C02S(config, m_maincpu, 16_MHz_XTAL); // W65C02S6TPG-14
 	m_maincpu->set_addrmap(AS_PROGRAM, &arb_state::v2_map);
 
@@ -317,11 +297,11 @@ void arb_state::v2(machine_config &config)
 	m_board->set_spawnpoints(12+2); // +2 checkers pieces
 	m_board->set_delay(attotime::from_msec(100));
 
-	/* video hardware */
+	// video hardware
 	PWM_DISPLAY(config, m_display).set_size(9+1, 12);
 	config.set_default_layout(layout_ave_arb);
 
-	/* sound hardware */
+	// sound hardware
 	SPEAKER(config, "speaker").front_center();
 	DAC_1BIT(config, m_dac).add_route(ALL_OUTPUTS, "speaker", 0.25);
 }
@@ -330,7 +310,7 @@ void arb_state::arb(machine_config &config)
 {
 	v2(config);
 
-	/* basic machine hardware */
+	// basic machine hardware
 	M6502(config.replace(), m_maincpu, 4_MHz_XTAL/2); // R6502P
 	m_maincpu->set_addrmap(AS_PROGRAM, &arb_state::main_map);
 
@@ -340,8 +320,8 @@ void arb_state::arb(machine_config &config)
 	m_via->readpa_handler().set(FUNC(arb_state::input_r));
 	m_via->irq_handler().set_inputline(m_maincpu, M6502_IRQ_LINE);
 
-	/* cartridge */
-	GENERIC_CARTSLOT(config, m_cart, generic_plain_slot, "arb");
+	// cartridge
+	GENERIC_CARTSLOT(config, m_cart, generic_linear_slot, "arb");
 	m_cart->set_device_load(FUNC(arb_state::cart_load));
 	m_cart->set_must_be_loaded(true);
 
@@ -350,9 +330,9 @@ void arb_state::arb(machine_config &config)
 
 
 
-/******************************************************************************
+/*******************************************************************************
     ROM Definitions
-******************************************************************************/
+*******************************************************************************/
 
 ROM_START( arb )
 	ROM_REGION( 0x10000, "maincpu", ROMREGION_ERASE00 )
@@ -368,10 +348,10 @@ ROM_END
 
 
 
-/******************************************************************************
+/*******************************************************************************
     Drivers
-******************************************************************************/
+*******************************************************************************/
 
-/*    YEAR  NAME   PARENT CMP MACHINE  INPUT  CLASS      INIT        COMPANY, FULLNAME, FLAGS */
-CONS( 1980, arb,   0,      0, arb,     arb,   arb_state, empty_init, "AVE Micro Systems", "Auto Response Board", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK )
-CONS( 2012, arbv2, arb,    0, v2,      arb,   arb_state, empty_init, "hack (Steve Braid)", "ARB V2 Sargon 4.0", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK )
+//    YEAR  NAME   PARENT  COMPAT  MACHINE  INPUT  CLASS      INIT        COMPANY, FULLNAME, FLAGS
+SYST( 1980, arb,   0,      0,      arb,     arb,   arb_state, empty_init, "AVE Micro Systems", "Auto Response Board", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK )
+SYST( 2012, arbv2, arb,    0,      v2,      arb,   arb_state, empty_init, "hack (Steve Braid)", "ARB V2 Sargon 4.0", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK )

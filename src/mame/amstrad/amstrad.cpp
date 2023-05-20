@@ -111,6 +111,7 @@ Some bugs left :
 #include "machine/ram.h"
 #include "softlist.h"
 #include "speaker.h"
+#include "utf8.h"
 
 #define MANUFACTURER_NAME 0x07
 #define TV_REFRESH_RATE 0x10
@@ -903,17 +904,6 @@ void aleste_exp_cards(device_slot_interface &device)
 	device.option_add("magicsound", AL_MAGICSOUND);
 }
 
-void amstrad_centronics_devices(device_slot_interface &device)
-{
-	device.option_add("pl80", COMX_PL80);
-	device.option_add("ex800", EPSON_EX800);
-	device.option_add("lx800", EPSON_LX800);
-	device.option_add("lx810l", EPSON_LX810L);
-	device.option_add("ap2000", EPSON_AP2000);
-	device.option_add("printer", CENTRONICS_PRINTER);
-	device.option_add("digiblst", CENTRONICS_DIGIBLASTER);
-}
-
 void amstrad_state::amstrad_base(machine_config &config)
 {
 	/* Machine hardware */
@@ -959,7 +949,7 @@ void amstrad_state::amstrad_base(machine_config &config)
 	m_ay->add_route(ALL_OUTPUTS, "mono", 0.25);
 
 	/* printer */
-	CENTRONICS(config, m_centronics, amstrad_centronics_devices, "printer");
+	CENTRONICS(config, m_centronics, centronics_devices, "printer");
 	m_centronics->busy_handler().set(FUNC(amstrad_state::write_centronics_busy));
 
 	/* snapshot */

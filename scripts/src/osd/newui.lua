@@ -16,9 +16,9 @@ premake.make.linkoptions_after = false;
 function maintargetosdoptions(_target,_subtarget)
 	osdmodulestargetconf()
 
-	configuration { "mingw*" }
-		links {
-			"mingw32",
+	configuration { "mingw*-gcc" }
+		linkoptions {
+			"-municode",
 		}
 
 	configuration { }
@@ -38,8 +38,6 @@ function maintargetosdoptions(_target,_subtarget)
 		"comdlg32",
 		"psapi",
 		"ole32",
-		"shlwapi",
-		"uuid",
 	}
 
 -- needs same resources as messui, because dropdown menus are in mameui.rc
@@ -153,6 +151,7 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/osdepend.h",
 		MAME_DIR .. "src/osd/winui/newui.cpp",
 		MAME_DIR .. "src/osd/windows/winmain.cpp",
+		MAME_DIR .. "src/osd/windows/winopts.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugbaseinfo.cpp",
@@ -227,6 +226,7 @@ project ("ocore_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/osdcore.h",
 		MAME_DIR .. "src/osd/strconv.cpp",
 		MAME_DIR .. "src/osd/strconv.h",
+		MAME_DIR .. "src/osd/windows/main.cpp",
 		MAME_DIR .. "src/osd/osdsync.cpp",
 		MAME_DIR .. "src/osd/osdsync.h",
 		MAME_DIR .. "src/osd/windows/winutf8.cpp",

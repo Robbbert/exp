@@ -17,20 +17,21 @@
 
 #include "emu.h"
 
-#include "bus/nscsi/devices.h"
-#include "bus/rs232/rs232.h"
-#include "cpu/m68000/m68000.h"
-#include "machine/ram.h"
-#include "machine/timer.h"
-#include "machine/z80scc.h"
-#include "machine/nscsi_bus.h"
-#include "machine/ncr5380.h"
 #include "cuda.h"
 #include "egret.h"
 #include "macadb.h"
 #include "macscsi.h"
 #include "mactoolbox.h"
 #include "sonora.h"
+
+#include "bus/nscsi/devices.h"
+#include "bus/rs232/rs232.h"
+#include "cpu/m68000/m68030.h"
+#include "machine/ram.h"
+#include "machine/timer.h"
+#include "machine/z80scc.h"
+#include "machine/nscsi_bus.h"
+#include "machine/ncr5380.h"
 
 #include "emupal.h"
 #include "screen.h"
@@ -266,7 +267,6 @@ void macvail_state::maclc3_base(machine_config &config)
 	m_sonora->set_rom_tag("bootrom");
 
 	MACADB(config, m_macadb, C15M);
-	m_macadb->set_mcu_mode(true);
 }
 
 void macvail_state::maclc3(machine_config &config)
@@ -320,4 +320,4 @@ ROM_END
 } // anonymous namespace
 
 COMP(1993, maclc3, 0, 0, maclc3, macadb, macvail_state, empty_init, "Apple Computer", "Macintosh LC III", MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_SOUND)
-COMP(1993, maclc520, 0, 0, maclc520, macadb, macvail_state, empty_init, "Apple Computer", "Macintosh LC 520", MACHINE_NOT_WORKING)
+COMP(1993, maclc520, 0, 0, maclc520, macadb, macvail_state, empty_init, "Apple Computer", "Macintosh LC 520", MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_SOUND)

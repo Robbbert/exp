@@ -22,7 +22,7 @@ function maintargetosdoptions(_target,_subtarget)
 		linkoptions {
 			"-municode",
 			"-lmingw32",
---			"-Wl,--allow-multiple-definition",
+			"-Wl,--allow-multiple-definition",
 		}
 
 	configuration { "x64", "Release" }
@@ -66,7 +66,7 @@ function maintargetosdoptions(_target,_subtarget)
 		"shlwapi",
 	}
 
--- Local file gives correct icon in mess instance inside of messui
+-- Local file gives correct icon in mame instance inside of mameui
 -- Local file must #include mameui.rc
 	override_resources = true;
 	rctarget = _subtarget;
@@ -179,6 +179,7 @@ project ("osd_" .. _OPTIONS["osd"])
 --		MAME_DIR .. "src/osd/windows/winmenu.cpp",
 		MAME_DIR .. "src/osd/winui/newui.cpp",
 		MAME_DIR .. "src/osd/windows/winmain.cpp",
+		MAME_DIR .. "src/osd/windows/winopts.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugbaseinfo.cpp",
@@ -221,8 +222,8 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/winui/helpids.cpp",
 		MAME_DIR .. "src/osd/winui/history.cpp",
 		MAME_DIR .. "src/osd/winui/layout.cpp",
-		MAME_DIR .. "src/osd/winui/main.cpp",
 		MAME_DIR .. "src/osd/winui/messui.cpp",
+		MAME_DIR .. "src/osd/winui/main.cpp",
 		MAME_DIR .. "src/osd/winui/mui_audit.cpp",
 		MAME_DIR .. "src/osd/winui/mui_main.cpp",
 		MAME_DIR .. "src/osd/winui/mui_opts.cpp",
