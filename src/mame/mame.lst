@@ -18176,6 +18176,7 @@ redrobin                        // (c) 1986 Elettronolo
 amidar                          // GX337 (c) 1982 Konami
 amidar1                         // GX337 (c) 1981 Konami
 amidarb                         // bootleg
+amidarb2                        // bootleg
 amidarc                         // bootleg
 amidaro                         // GX337 (c) 1982 Konami + Olympia license
 amidars                         // GX337 (c) 1982 Konami
@@ -35365,9 +35366,12 @@ quake                           // (c) 19?? Lazer-Tron / iD Software
 queen                           //
 
 @source:pc/sis630.cpp
+asuspolo                        // (c) 2001
+asuscusc                        // (c) 2001
 gamecst2                        // MAME based bootleg, version 2.613
 gamecstl                        // MAME based bootleg
 shutms11                        // (c) 2000
+zidav630e                       // (c) 2000/2001
 
 @source:pc/tandy1t.cpp
 t1000hx                         // 1987 Tandy 1000 HX (similiar to PCJr)
@@ -38947,10 +38951,10 @@ zombrvno                        // 1999.02 Zombie Revenge
 zunou                           // 2006.07 Touch de Zunou
 
 @source:sega/puckpkmn.cpp
+jingling                        // (c) 2000 IBS Co. Ltd
 jzth                            //
-puckpkmn                        // (c) 2000 Genie
-puckpkmna                       // (c) 2000 IBS
-puckpkmnb                       // (c) 2000 IBS
+puckpkmn                        // (c) 2000 Sun Mixing
+puckpkmnb                       //
 
 @source:sega/saturn.cpp
 hisaturn                        // Hitachi HiSaturn
