@@ -149,7 +149,7 @@ static void create_index_history(std::ifstream &fp, std::string file_line, int f
 						if (quot2 != npos)
 						{
 							std::string second = file_line.substr(quot1, quot2-quot1);
-							final_key = first + std::string("=") + second;
+							final_key = first + std::string(":") + second;
 						}
 					}
 				}
@@ -219,12 +219,12 @@ static bool create_index(std::ifstream &fp, int filenum)
 				file_line.erase(remove_if(file_line.begin(), file_line.end(), ::isspace), file_line.end());
 				char s[file_line.length()+1];
 				strcpy(s, file_line.c_str());
-				const char* first = strtok(s, "=");  // get first part of key
+				const char* first = strtok(s, ":");  // get first part of key
 				char* second = strtok(NULL, ",");    // get second part
 				while (second)
 				{
 					// store into index
-					mymap[filenum][std::string(first) + std::string("=") + std::string(second)] = position;
+					mymap[filenum][std::string(first) + std::string(":") + std::string(second)] = position;
 					second = strtok(NULL, ",");
 				}
 			}
@@ -233,6 +233,61 @@ static bool create_index(std::ifstream &fp, int filenum)
 		}
 	}
 	return true;
+}
+
+static std::string convert_xml(std::string buf)
+{
+	// convert xml to real chars
+	if (!buf.empty())
+	{
+		bool found = false;
+		size_t find = 0, npos = std::string::npos;
+		for (; found == false;)
+		{
+			find = buf.find("&amp;");
+			if (find != npos)
+				buf.replace(find,5,"&");
+			else
+				found=true;
+		}
+		found = false;
+		for (; found == false;)
+		{
+			find = buf.find("&apos;");
+			if (find != npos)
+				buf.replace(find,6,"\'");
+			else
+				found=true;
+		}
+		found = false;
+		for (; found == false;)
+		{
+			find = buf.find("&quot;");
+			if (find != npos)
+				buf.replace(find,6,"\"");
+			else
+				found=true;
+		}
+		found = false;
+		for (; found == false;)
+		{
+			find = buf.find("&lt;");
+			if (find != npos)
+				buf.replace(find,4,"<");
+			else
+				found=true;
+		}
+		found = false;
+		for (; found == false;)
+		{
+			find = buf.find("&gt;");
+			if (find != npos)
+				buf.replace(find,4,">");
+			else
+				found=true;
+		}
+	}
+	return buf;
 }
 
 static std::string load_datafile_text(std::ifstream &fp, std::string keycode, int filenum, const char *tag)
@@ -250,6 +305,9 @@ static std::string load_datafile_text(std::ifstream &fp, std::string keycode, in
 		while (std::getline(fp, file_line))
 		{
 			//printf("*******2: %s\n",file_line.c_str());
+			if (file_line == "- CONTRIBUTE -")
+				break;
+
 			if (file_line.find("$end")==0)
 				break;
 
@@ -281,11 +339,9 @@ std::string load_swinfo(const game_driver *drv, const char* datsdir, std::string
 	if (create_index(fp, filenum))
 	{
 		size_t i = software.find(":");
-		std::string ssys = software.substr(0, i);
 		std::string ssoft = software.substr(i+1);
-		std::string first = ssys + std::string("=") + ssoft;
 		// get info on software
-		buf = load_datafile_text(fp, first, filenum, m_swInfo[filenum].descriptor);
+		buf = load_datafile_text(fp, software, filenum, m_swInfo[filenum].descriptor);
 
 		if (!buf.empty())
 			buffer.append(m_swInfo[filenum].header).append(ssoft).append("\n").append(buf).append("\n\n\n");
@@ -293,7 +349,7 @@ std::string load_swinfo(const game_driver *drv, const char* datsdir, std::string
 		fp.close();
 	}
 
-	return buffer;
+	return convert_xml(buffer);
 }
 
 std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filenum)
@@ -328,56 +384,6 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 				}
 			}
 		}
-		// convert xml to real chars
-		if (!buf.empty())
-		{
-			bool found = false;
-			size_t find = 0, npos = std::string::npos;
-			for (; found == false;)
-			{
-				find = buf.find("&amp;");
-				if (find != npos)
-					buf.replace(find,5,"&");
-				else
-					found=true;
-			}
-			found = false;
-			for (; found == false;)
-			{
-				find = buf.find("&apos;");
-				if (find != npos)
-					buf.replace(find,6,"\'");
-				else
-					found=true;
-			}
-			found = false;
-			for (; found == false;)
-			{
-				find = buf.find("&quot;");
-				if (find != npos)
-					buf.replace(find,6,"\"");
-				else
-					found=true;
-			}
-			found = false;
-			for (; found == false;)
-			{
-				find = buf.find("&lt;");
-				if (find != npos)
-					buf.replace(find,4,"<");
-				else
-					found=true;
-			}
-			found = false;
-			for (; found == false;)
-			{
-				find = buf.find("&gt;");
-				if (find != npos)
-					buf.replace(find,4,">");
-				else
-					found=true;
-			}
-		}
 	}
 	else
 	/* try to open datafile */
@@ -405,7 +411,7 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 
 	fp.close();
 
-	return buffer;
+	return convert_xml(buffer);
 }
 
 std::string load_sourceinfo(const game_driver *drv, const char* datsdir, int filenum)
