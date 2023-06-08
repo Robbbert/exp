@@ -68,7 +68,7 @@ HSOURCEINFO;
 // The order of these is the order they are displayed
 const HGAMEINFO m_gameInfo[MAX_HFILES] =
 {
-	{ "history.dat",  "\n**** :HISTORY: ****\n\n",          "$bio",   1 },
+	{ "history.xml",  "\n**** :HISTORY: ****\n\n",          "</text>",   1 },
 	{ "sysinfo.dat",  "\n**** :SYSINFO: ****\n\n",          "$bio",   1 },
 	{ "messinfo.dat", "\n**** :MESSINFO: ****\n\n",         "$mame",  1 },
 	{ "mameinfo.dat", "\n**** :MAMEINFO: ****\n\n",         "$mame",  1 },
@@ -92,7 +92,7 @@ const HSOURCEINFO m_sourceInfo[MAX_HFILES] =
 
 const HSOURCEINFO m_swInfo[MAX_HFILES] =
 {
-	{ "history.dat",  "\n**** :HISTORY item: ",     "$bio" },
+	{ "history.xml",  "\n**** :HISTORY item: ",     "</text>" },
 	{ NULL },
 	{ NULL },
 	{ NULL },
@@ -106,6 +106,88 @@ const HSOURCEINFO m_swInfo[MAX_HFILES] =
 
 int file_sizes[MAX_HFILES] = { 0, };
 std::map<std::string, std::streampos> mymap[MAX_HFILES];
+
+static void create_index_history(std::ifstream &fp, std::string file_line, int filenum)
+{
+	const std::string text1 = "<system name=", text2 = "<item list=", text3 = "name=", text4 = "\"";
+	const size_t npos = std::string::npos;
+	std::streampos key_position = file_line.size() + 2, text_position = 0U; // tellg is buggy, this works and is faster
+	while (fp.good())
+	{
+		size_t find = file_line.find(text1), quot1 = npos, quot2 = npos;
+		std::string final_key;
+		if (find != npos)   // found a system
+		{
+			// Find position of the 2 double-quotes
+			quot1 = file_line.find(text4);
+			if (quot1 != npos)
+			{
+				quot1++;
+				quot2 = file_line.find(text4, quot1);
+				if (quot2 != npos)
+					final_key = file_line.substr(quot1, quot2-quot1);
+			}
+		}
+		else
+		find = file_line.find(text2);
+		if (find != npos)   // found a sw-item
+		{
+			// Find position of the 4 double-quotes
+			quot1 = file_line.find(text4), quot2 = npos;
+			if (quot1 != npos)
+			{
+				quot1++;
+				quot2 = file_line.find(text4, quot1);
+				if (quot2 != npos)
+				{
+					std::string first = file_line.substr(quot1, quot2-quot1);
+					quot1 = file_line.find(text4, quot2+1);
+					if (quot1 != npos)
+					{
+						quot1++;
+						quot2 = file_line.find(text4, quot1);
+						if (quot2 != npos)
+						{
+							std::string second = file_line.substr(quot1, quot2-quot1);
+							final_key = first + std::string("=") + second;
+						}
+					}
+				}
+			}
+		}
+		// If we passed the tests we now have the key, find the next text
+		if (!final_key.empty())
+		{
+			bool found = false;
+			if (key_position > text_position) // else new key uses the same text as last time
+			{
+				// look for next text
+				text_position = key_position;  // set to actual fp
+				for (;found == false;)
+				{
+					std::getline(fp, file_line);
+					find = file_line.find("<text>");
+					if (find != npos)
+					{
+						found = true;
+						text_position += (find+6);
+					}
+					else
+						text_position += (file_line.size() + 2);
+				}
+			}
+			// Save info
+			mymap[filenum][final_key] = text_position;
+		}
+		fp.seekg(key_position);
+		std::getline(fp, file_line);
+		key_position += (file_line.size() + 2);
+	}
+	// check contents
+//	if (filenum == 0)
+//	for (auto const &it : mymap[filenum])
+//		printf("%s = %X\n", it.first.c_str(), int(it.second));
+}
 
 static bool create_index(std::ifstream &fp, int filenum)
 {
@@ -121,35 +203,35 @@ static bool create_index(std::ifstream &fp, int filenum)
 	mymap[filenum].clear();
 	file_sizes[filenum] = file_size;
 	fp.seekg(0);
-	std::string file_line, first, second;
+	std::string file_line;
 	std::getline(fp, file_line);
-	int position = file_line.size() + 2; // tellg is buggy, this works and is faster
-	while (fp.good())
+	if (filenum == 0)
+		create_index_history(fp, file_line, filenum);
+	else
 	{
-		char t1 = file_line[0];
-		if ((std::count(file_line.begin(),file_line.end(),'=') == 1) && (t1 == '$')) // line must start with $ and contain one =
+		std::streampos position = file_line.size() + 2; // tellg is buggy, this works and is faster
+		while (fp.good())
 		{
-			// now start by removing all spaces
-			file_line.erase(remove_if(file_line.begin(), file_line.end(), ::isspace), file_line.end());
-			char s[file_line.length()+1];
-			strcpy(s, file_line.c_str());
-
-			const char* first = strtok(s, "=");  // get first part of key
-			char* second = strtok(NULL, ",");    // get second part
-			while (second)
+			char t1 = file_line[0];
+			if ((std::count(file_line.begin(),file_line.end(),'=') == 1) && (t1 == '$')) // line must start with $ and contain one =
 			{
-				// store into index
-				mymap[filenum][std::string(first) + std::string("=") + std::string(second)] = position;
-				second = strtok(NULL, ",");
+				// now start by removing all spaces
+				file_line.erase(remove_if(file_line.begin(), file_line.end(), ::isspace), file_line.end());
+				char s[file_line.length()+1];
+				strcpy(s, file_line.c_str());
+				const char* first = strtok(s, "=");  // get first part of key
+				char* second = strtok(NULL, ",");    // get second part
+				while (second)
+				{
+					// store into index
+					mymap[filenum][std::string(first) + std::string("=") + std::string(second)] = position;
+					second = strtok(NULL, ",");
+				}
 			}
+			std::getline(fp, file_line);
+			position += (file_line.size() + 2);
 		}
-		std::getline(fp, file_line);
-		position += (file_line.size() + 2);
 	}
-	// check contents
-//	if (filenum == 0)
-//	for (auto const &it : mymap[filenum])
-//		printf("%s = %X\n", it.first.c_str(), int(it.second));
 	return true;
 }
 
@@ -167,8 +249,11 @@ static std::string load_datafile_text(std::ifstream &fp, std::string keycode, in
 		/* read text until buffer is full or end of entry is encountered */
 		while (std::getline(fp, file_line))
 		{
-			//printf("%s\n",file_line.c_str());
+			//printf("*******2: %s\n",file_line.c_str());
 			if (file_line.find("$end")==0)
+				break;
+
+			if (file_line.find("</text>") != std::string::npos)
 				break;
 
 			if (file_line.find(tag)==0)
@@ -198,7 +283,7 @@ std::string load_swinfo(const game_driver *drv, const char* datsdir, std::string
 		size_t i = software.find(":");
 		std::string ssys = software.substr(0, i);
 		std::string ssoft = software.substr(i+1);
-		std::string first = std::string("$") + ssys + std::string("=") + ssoft;
+		std::string first = ssys + std::string("=") + ssoft;
 		// get info on software
 		buf = load_datafile_text(fp, first, filenum, m_swInfo[filenum].descriptor);
 
@@ -222,6 +307,79 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 	std::string buf, filename = datsdir + std::string("\\") + m_gameInfo[filenum].filename;
 	std::ifstream fp (filename);
 
+	if (filenum == 0)
+	{
+		/* try to open history.xml */
+		if (create_index(fp, filenum))
+		{
+			std::string first = drv->name;
+			// get info on game
+			buf = load_datafile_text(fp, first, filenum, m_gameInfo[filenum].descriptor);
+
+			// if nothing, and it's a clone, and it's allowed, try the parent
+			if (buf.empty() && m_gameInfo[filenum].bClone)
+			{
+				int g = driver_list::clone(*drv);
+				if (g != -1)
+				{
+					drv = &driver_list::driver(g);
+					first = drv->name;
+					buf = load_datafile_text(fp, first, filenum, m_gameInfo[filenum].descriptor);
+				}
+			}
+		}
+		// convert xml to real chars
+		if (!buf.empty())
+		{
+			bool found = false;
+			size_t find = 0, npos = std::string::npos;
+			for (; found == false;)
+			{
+				find = buf.find("&amp;");
+				if (find != npos)
+					buf.replace(find,5,"&");
+				else
+					found=true;
+			}
+			found = false;
+			for (; found == false;)
+			{
+				find = buf.find("&apos;");
+				if (find != npos)
+					buf.replace(find,6,"\'");
+				else
+					found=true;
+			}
+			found = false;
+			for (; found == false;)
+			{
+				find = buf.find("&quot;");
+				if (find != npos)
+					buf.replace(find,6,"\"");
+				else
+					found=true;
+			}
+			found = false;
+			for (; found == false;)
+			{
+				find = buf.find("&lt;");
+				if (find != npos)
+					buf.replace(find,4,"<");
+				else
+					found=true;
+			}
+			found = false;
+			for (; found == false;)
+			{
+				find = buf.find("&gt;");
+				if (find != npos)
+					buf.replace(find,4,">");
+				else
+					found=true;
+			}
+		}
+	}
+	else
 	/* try to open datafile */
 	if (create_index(fp, filenum))
 	{
@@ -240,12 +398,12 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 				buf = load_datafile_text(fp, first, filenum, m_gameInfo[filenum].descriptor);
 			}
 		}
-
-		if (!buf.empty())
-			buffer.append(m_gameInfo[filenum].header).append(buf).append("\n\n\n");
-
-		fp.close();
 	}
+
+	if (!buf.empty())
+		buffer.append(m_gameInfo[filenum].header).append(buf).append("\n\n\n");
+
+	fp.close();
 
 	return buffer;
 }
