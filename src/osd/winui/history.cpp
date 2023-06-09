@@ -109,7 +109,7 @@ std::map<std::string, std::streampos> mymap[MAX_HFILES];
 
 static void create_index_history(std::ifstream &fp, std::string file_line, int filenum)
 {
-	const std::string text1 = "<system name=", text2 = "<item list=", text3 = "name=", text4 = "\"";
+	const std::string text1 = "<system name=", text2 = "<item list=", text4 = "\"";
 	const size_t npos = std::string::npos;
 	std::streampos key_position = file_line.size() + 2, text_position = 0U; // tellg is buggy, this works and is faster
 	while (fp.good())
@@ -248,7 +248,7 @@ static std::string convert_xml(std::string buf)
 			if (find != npos)
 				buf.replace(find,5,"&");
 			else
-				found=true;
+				found = true;
 		}
 		found = false;
 		for (; found == false;)
@@ -257,7 +257,7 @@ static std::string convert_xml(std::string buf)
 			if (find != npos)
 				buf.replace(find,6,"\'");
 			else
-				found=true;
+				found = true;
 		}
 		found = false;
 		for (; found == false;)
@@ -266,7 +266,7 @@ static std::string convert_xml(std::string buf)
 			if (find != npos)
 				buf.replace(find,6,"\"");
 			else
-				found=true;
+				found = true;
 		}
 		found = false;
 		for (; found == false;)
@@ -275,7 +275,7 @@ static std::string convert_xml(std::string buf)
 			if (find != npos)
 				buf.replace(find,4,"<");
 			else
-				found=true;
+				found = true;
 		}
 		found = false;
 		for (; found == false;)
@@ -284,15 +284,17 @@ static std::string convert_xml(std::string buf)
 			if (find != npos)
 				buf.replace(find,4,">");
 			else
-				found=true;
+				found = true;
 		}
 	}
 	return buf;
 }
 
+std::string readbuf;
+
 static std::string load_datafile_text(std::ifstream &fp, std::string keycode, int filenum, const char *tag)
 {
-	std::string readbuf;
+	readbuf.clear();
 
 	auto search = mymap[filenum].find(keycode);
 	if (search != mymap[filenum].end())
@@ -301,7 +303,7 @@ static std::string load_datafile_text(std::ifstream &fp, std::string keycode, in
 		fp.seekg(offset);
 		std::string file_line;
 
-		/* read text until buffer is full or end of entry is encountered */
+		// read text until buffer is full or end of entry is encountered
 		while (std::getline(fp, file_line))
 		{
 			//printf("*******2: %s\n",file_line.c_str());
@@ -324,9 +326,11 @@ static std::string load_datafile_text(std::ifstream &fp, std::string keycode, in
 	return readbuf;
 }
 
+std::string buffer;
+
 std::string load_swinfo(const game_driver *drv, const char* datsdir, std::string software, int filenum)
 {
-	std::string buffer;
+	buffer.clear();
 	// if it's a NULL record exit now
 	if (!m_swInfo[filenum].filename)
 		return buffer;
@@ -335,7 +339,7 @@ std::string load_swinfo(const game_driver *drv, const char* datsdir, std::string
 	std::string buf, filename = datsdir + std::string("\\") + m_swInfo[filenum].filename;
 	std::ifstream fp (filename);
 
-	/* try to open datafile */
+	// try to open datafile
 	if (create_index(fp, filenum))
 	{
 		size_t i = software.find(":");
@@ -354,7 +358,7 @@ std::string load_swinfo(const game_driver *drv, const char* datsdir, std::string
 
 std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filenum)
 {
-	std::string buffer;
+	buffer.clear();
 	// if it's a NULL record exit now
 	if (!m_gameInfo[filenum].filename)
 		return buffer;
@@ -365,7 +369,7 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 
 	if (filenum == 0)
 	{
-		/* try to open history.xml */
+		// try to open history.xml
 		if (create_index(fp, filenum))
 		{
 			std::string first = drv->name;
@@ -386,7 +390,7 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 		}
 	}
 	else
-	/* try to open datafile */
+	// try to open datafile
 	if (create_index(fp, filenum))
 	{
 		std::string first = std::string("$info=")+drv->name;
@@ -416,7 +420,7 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 
 std::string load_sourceinfo(const game_driver *drv, const char* datsdir, int filenum)
 {
-	std::string buffer;
+	buffer.clear();
 	// if it's a NULL record exit now
 	if (!m_sourceInfo[filenum].filename)
 		return buffer;
@@ -452,9 +456,9 @@ std::string load_driver_geninfo(const game_driver *drv, int drvindex)
 	const game_driver *parent = NULL;
 	char name[512];
 	bool is_bios = false;
-	std::string buffer = "\n**** :GENERAL MACHINE INFO: ****\n\n";
+	buffer = "\n**** :GENERAL MACHINE INFO: ****\n\n";
 
-	/* List the game info 'flags' */
+	// List the game info 'flags'
 	uint32_t cache = GetDriverCacheLower(drvindex);
 	if (BIT(cache, 6))
 		buffer.append("This game doesn't work properly\n");
@@ -494,14 +498,14 @@ std::string load_driver_geninfo(const game_driver *drv, int drvindex)
 	if (drv->flags & MACHINE_IS_BIOS_ROOT)
 		is_bios = true;
 
-	/* GAME INFORMATIONS */
+	// GAME INFORMATIONS
 	snprintf(name, std::size(name), "\nGAME: %s\n", drv->name);
 	buffer.append(name);
 	snprintf(name, std::size(name), "%s", drv->type.fullname());
 	buffer.append(name);
 	snprintf(name, std::size(name), " (%s %s)\n\nCPU:\n", drv->manufacturer, drv->year);
 	buffer.append(name);
-	/* iterate over CPUs */
+	// iterate over CPUs
 	execute_interface_enumerator cpuiter(config.root_device());
 	std::unordered_set<std::string> exectags;
 
@@ -535,7 +539,7 @@ std::string load_driver_geninfo(const game_driver *drv, int drvindex)
 
 	buffer.append("\nSOUND:\n");
 	int has_sound = 0;
-	/* iterate over sound chips */
+	// iterate over sound chips
 	sound_interface_enumerator sounditer(config.root_device());
 	std::unordered_set<std::string> soundtags;
 
@@ -748,11 +752,12 @@ bool validate_datfiles(void)
 	return result;
 }
 
+std::string fullbuf;
 
 // For all of MAME builds - called by winui.cpp
 char * GetGameHistory(int driver_index, std::string software)
 {
-	std::string fullbuf;
+	fullbuf.clear();
 	if (driver_index < 0)
 			return ConvertToWindowsNewlines(fullbuf.c_str());
 
@@ -796,7 +801,7 @@ char * GetGameHistory(int driver_index, std::string software)
 // For Arcade-only builds
 char * GetGameHistory(int driver_index)
 {
-	std::string fullbuf;
+	fullbuf.clear();
 	if (driver_index < 0)
 			return ConvertToWindowsNewlines(fullbuf.c_str());
 
