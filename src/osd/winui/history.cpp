@@ -106,15 +106,67 @@ const HSOURCEINFO m_swInfo[MAX_HFILES] =
 
 int file_sizes[MAX_HFILES] = { 0, };
 std::map<std::string, std::streampos> mymap[MAX_HFILES];
+const size_t npos = std::string::npos;
 
-static void create_index_history(std::ifstream &fp, std::string file_line, int filenum)
+static void create_index_history(const char* datsdir, std::ifstream &fp, std::string file_line, int filenum)
 {
+	int what_to_do = 0;  // 0 = xml not found; 1 = idx not found or version mismatch; 2 = both ok, need to read idx.
 	const std::string text1 = "<system name=", text2 = "<item list=", text4 = "\"";
-	const size_t npos = std::string::npos;
+	std::string xml_ver, idx_ver;
+	size_t quot1 = npos, quot2 = npos;
+
+	if (!fp.good())
+		return;  // xml not found
+	// get version from line 2
+	std::getline(fp, file_line);
+	quot1 = file_line.find(text4);
+	if (quot1 != npos)
+	{
+		quot1++;
+		quot2 = file_line.find(text4, quot1);
+		if (quot2 != npos)
+		{
+			xml_ver = file_line.substr(quot1, quot2-quot1);
+			//printf("XML-VER = %s\n",xml_ver.c_str());fflush(stdout);
+		}
+	}
+
+	std::string buf, filename = datsdir + std::string("\\history.idx");
+	std::ifstream fi (filename);
+	if (!fi.good())
+		what_to_do = 1;  // idx not found
+	else
+	// get version from line 1
+	{
+		std::getline(fi, idx_ver);
+		//printf("IDX-VER = %s\n",idx_ver.c_str());fflush(stdout);
+		if (xml_ver == idx_ver)
+			what_to_do = 2;
+	}
+
+	//printf("*******2 %d\n",what_to_do);fflush(stdout);
+	// 2: just read idx into map
+	if (what_to_do == 2)
+	{
+		std::getline(fi, file_line);
+		while (fi.good())
+		{
+			quot1 = file_line.find("=");
+			//std::string t4 = file_line.substr(0, quot1);printf("*** %s\n",t4.c_str());fflush(stdout);
+			//u32 t5 = stoi(file_line.substr(quot1+1));printf("*** %d\n",t5);fflush(stdout);
+			mymap[filenum][file_line.substr(0, quot1)] = stoi(file_line.substr(quot1+1));
+			std::getline(fi, file_line);
+		}
+		fi.close();
+		return;
+	}
+
+	// 1: create idx then save it
+	fi.close();
 	std::streampos key_position = file_line.size() + 2, text_position = 0U; // tellg is buggy, this works and is faster
 	while (fp.good())
 	{
-		size_t find = file_line.find(text1), quot1 = npos, quot2 = npos;
+		size_t find = file_line.find(text1);
 		std::string final_key;
 		if (find != npos)   // found a system
 		{
@@ -183,13 +235,23 @@ static void create_index_history(std::ifstream &fp, std::string file_line, int f
 		std::getline(fp, file_line);
 		key_position += (file_line.size() + 2);
 	}
-	// check contents
-//	if (filenum == 0)
-//	for (auto const &it : mymap[filenum])
-//		printf("%s = %X\n", it.first.c_str(), int(it.second));
+
+	// Save idx
+	FILE *f = fopen(filename.c_str(), "w");
+	if (f == NULL)
+	{
+		printf("Unable to open history.idx for writing.\n");
+		return;
+	}
+
+	fprintf(f, "%s\n",xml_ver.c_str());
+	for (auto const &it : mymap[filenum])
+		fprintf(f, "%s=%d\n", it.first.c_str(), int(it.second));
+	fclose(f);
+
 }
 
-static bool create_index(std::ifstream &fp, int filenum)
+static bool create_index(const char* datsdir, std::ifstream &fp, int filenum)
 {
 	if (!fp.good())
 		return false;
@@ -206,32 +268,37 @@ static bool create_index(std::ifstream &fp, int filenum)
 	std::string file_line;
 	std::getline(fp, file_line);
 	if (filenum == 0)
-		create_index_history(fp, file_line, filenum);
+		create_index_history(datsdir, fp, file_line, filenum);
 	else
 	{
 		std::streampos position = file_line.size() + 2; // tellg is buggy, this works and is faster
 		while (fp.good())
 		{
-			char t1 = file_line[0];
-			if ((std::count(file_line.begin(),file_line.end(),'=') == 1) && (t1 == '$')) // line must start with $ and contain one =
+			if (file_line.find("$info=")==0)
 			{
 				// now start by removing all spaces
 				file_line.erase(remove_if(file_line.begin(), file_line.end(), ::isspace), file_line.end());
-				char s[file_line.length()+1];
-				strcpy(s, file_line.c_str());
-				const char* first = strtok(s, ":");  // get first part of key
-				char* second = strtok(NULL, ",");    // get second part
-				while (second)
+				file_line.erase(0,6);
+				size_t t1 = npos;
+				while (file_line.length() > 0)
 				{
+					t1 = file_line.find(",");
 					// store into index
-					mymap[filenum][std::string(first) + std::string(":") + std::string(second)] = position;
-					second = strtok(NULL, ",");
+					mymap[filenum][file_line.substr(0, t1)] = position;
+					if (t1 == npos)
+						file_line.erase();
+					else
+						file_line.erase(0, t1+1); // erase key and comma
 				}
 			}
 			std::getline(fp, file_line);
 			position += (file_line.size() + 2);
 		}
 	}
+	// check contents
+//	if (filenum == 6)
+//		for (auto const &it : mymap[filenum])
+//			printf("%s = %X\n", it.first.c_str(), int(it.second));
 	return true;
 }
 
@@ -241,7 +308,7 @@ static std::string convert_xml(std::string buf)
 	if (!buf.empty())
 	{
 		bool found = false;
-		size_t find = 0, npos = std::string::npos;
+		size_t find = 0;
 		for (; found == false;)
 		{
 			find = buf.find("&amp;");
@@ -306,14 +373,14 @@ static std::string load_datafile_text(std::ifstream &fp, std::string keycode, in
 		// read text until buffer is full or end of entry is encountered
 		while (std::getline(fp, file_line))
 		{
-			//printf("*******2: %s\n",file_line.c_str());
+			//if (filenum == 6) ("*******2: %s\n",file_line.c_str());
 			if (file_line == "- CONTRIBUTE -")
 				break;
 
 			if (file_line.find("$end")==0)
 				break;
 
-			if (file_line.find("</text>") != std::string::npos)
+			if (file_line.find("</text>") != npos)
 				break;
 
 			if (file_line.find(tag)==0)
@@ -340,7 +407,7 @@ std::string load_swinfo(const game_driver *drv, const char* datsdir, std::string
 	std::ifstream fp (filename);
 
 	// try to open datafile
-	if (create_index(fp, filenum))
+	if (create_index(datsdir, fp, filenum))
 	{
 		size_t i = software.find(":");
 		std::string ssoft = software.substr(i+1);
@@ -370,7 +437,7 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 	if (filenum == 0)
 	{
 		// try to open history.xml
-		if (create_index(fp, filenum))
+		if (create_index(datsdir, fp, filenum))
 		{
 			std::string first = drv->name;
 			// get info on game
@@ -391,12 +458,11 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 	}
 	else
 	// try to open datafile
-	if (create_index(fp, filenum))
+	if (create_index(datsdir, fp, filenum))
 	{
-		std::string first = std::string("$info=")+drv->name;
+		std::string first = drv->name;
 		// get info on game
 		buf = load_datafile_text(fp, first, filenum, m_gameInfo[filenum].descriptor);
-
 		// if nothing, and it's a clone, and it's allowed, try the parent
 		if (buf.empty() && m_gameInfo[filenum].bClone)
 		{
@@ -404,7 +470,7 @@ std::string load_gameinfo(const game_driver *drv, const char* datsdir, int filen
 			if (g != -1)
 			{
 				drv = &driver_list::driver(g);
-				first = std::string("$info=")+drv->name;
+				first = drv->name;
 				buf = load_datafile_text(fp, first, filenum, m_gameInfo[filenum].descriptor);
 			}
 		}
@@ -433,9 +499,9 @@ std::string load_sourceinfo(const game_driver *drv, const char* datsdir, int fil
 	size_t i = source.find_last_of("/");
 	source.erase(0,i+1);
 
-	if (create_index(fp, filenum))
+	if (create_index(datsdir, fp, filenum))
 	{
-		std::string first = std::string("$info=")+source;
+		std::string first = source;
 		// get info on game driver source
 		buf = load_datafile_text(fp, first, filenum, m_sourceInfo[filenum].descriptor);
 
@@ -759,7 +825,7 @@ char * GetGameHistory(int driver_index, std::string software)
 {
 	fullbuf.clear();
 	if (driver_index < 0)
-			return ConvertToWindowsNewlines(fullbuf.c_str());
+		return ConvertToWindowsNewlines(fullbuf.c_str());
 
 	if (validate_datfiles())
 	{
@@ -774,7 +840,7 @@ char * GetGameHistory(int driver_index, std::string software)
 		if (!software.empty())
 		{
 			size_t i = software.find(':');
-			sw_valid = (i != std::string::npos) ? true : false;
+			sw_valid = (i != npos) ? true : false;
 		}
 
 		if (datsdir && osd::directory::open(datsdir))
@@ -803,7 +869,7 @@ char * GetGameHistory(int driver_index)
 {
 	fullbuf.clear();
 	if (driver_index < 0)
-			return ConvertToWindowsNewlines(fullbuf.c_str());
+		return ConvertToWindowsNewlines(fullbuf.c_str());
 
 	if (validate_datfiles())
 	{
