@@ -1,4 +1,4 @@
-// For licensing and usage information, read docs/winui_license.txt
+// For licensing and usage information, read docs/release/winui_license.txt
 // MASTER
 //****************************************************************************
 
@@ -793,13 +793,16 @@ static int CALLBACK Picker_CompareProc(LPARAM index1, LPARAM index2, LPARAM nPar
 	{
 		if (pPickerInfo->pCallbacks->pfnCompare)
 		{
-			nResult = pPickerInfo->pCallbacks->pfnCompare(pcpp->hwndPicker, index1, index2, pcpp->nSortColumn);
+			nResult = pPickerInfo->pCallbacks->pfnCompare(pcpp->hwndPicker,
+				index1, index2, pcpp->nSortColumn);
 		}
 		else
 		{
 			// no default sort proc, just get the string and compare them
-			s1 = Picker_CallGetItemString(pcpp->hwndPicker, index1, pcpp->nSortColumn, szBuffer1, sizeof(szBuffer1) / sizeof(szBuffer1[0]));
-			s2 = Picker_CallGetItemString(pcpp->hwndPicker, index2, pcpp->nSortColumn, szBuffer2, sizeof(szBuffer2) / sizeof(szBuffer2[0]));
+			s1 = Picker_CallGetItemString(pcpp->hwndPicker, index1, pcpp->nSortColumn,
+				szBuffer1, sizeof(szBuffer1) / sizeof(szBuffer1[0]));
+			s2 = Picker_CallGetItemString(pcpp->hwndPicker, index2, pcpp->nSortColumn,
+				szBuffer2, sizeof(szBuffer2) / sizeof(szBuffer2[0]));
 			nResult = _tcsicmp(s1, s2);
 		}
 
@@ -1480,7 +1483,6 @@ BOOL Picker_SaveColumnWidths(HWND hwndPicker)
 	struct PickerInfo *pPickerInfo;
 	int nColumnMax = 0, i = 0;
 	BOOL bSuccess = false;
-	BOOL res = 0;
 
 	pPickerInfo = GetPickerInfo(hwndPicker);
 
@@ -1523,6 +1525,6 @@ done:
 		free(order);
 	if (tmpOrder)
 		free(tmpOrder);
-	res++;
+
 	return bSuccess;
 }

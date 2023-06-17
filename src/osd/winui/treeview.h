@@ -1,8 +1,8 @@
 // license:BSD-3-Clause
 // For licensing and usage information, read docs/release/winui_license.txt
 
-#ifndef TREEVIEW_H
-#define TREEVIEW_H
+#ifndef WINUI_TREEVIEW_H
+#define WINUI_TREEVIEW_H
 
 #define MAX_EXTRA_FOLDERS 			256
 #define MAX_EXTRA_SUBFOLDERS 		256
