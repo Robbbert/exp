@@ -23,3 +23,4 @@ BOOL SoftwarePicker_Idle(HWND hwndPicker);
 
 BOOL SetupSoftwarePicker(HWND hwndPicker, const struct PickerOptions *pOptions);
 bool uses_file_extension(device_image_interface &dev, const char *file_extension);
+

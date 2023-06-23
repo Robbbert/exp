@@ -877,3 +877,4 @@ error:
 		free(pPickerInfo);
 	return FALSE;
 }
+

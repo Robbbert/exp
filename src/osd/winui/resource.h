@@ -19,12 +19,9 @@
 #define IDS_VIEW_SPACER3                79
 #define IDS_VIEW_LARGEICONS             80
 #define IDS_VIEW_SMALLICONS             81
-#define IDS_VIEW_LIST                   82
-#define IDS_VIEW_DETAILS                83
-#define IDS_VIEW_GROUPED                84
+#define IDS_VIEW_INDENT                 84
 #define IDS_VIEW_SPACER4                85
 #define IDS_VIEW_ARRANGE                86
-#define IDS_VIEW_LINEUPICONS            87
 #define IDS_VIEW_SPACER5                88
 #define IDS_VIEW_REFRESH                89
 #define IDS_VIEW_CONTEXTFILTERS         90
@@ -529,8 +526,6 @@
 #define IDC_SWTAB                       2001
 #define IDC_SWLIST                      2002
 #define IDC_SWDEVVIEW                   2003
-#define IDC_FILTER_COMPUTER             2004
-#define IDC_FILTER_CONSOLE              2005
 #define IDC_FILTER_MODIFIED             2006
 #define IDC_RAM_COMBOBOX                2008
 #define IDC_RAM_CAPTION                 2009
@@ -543,8 +538,9 @@
 #define ID_ABOUT                        40003
 #define ID_FILE_PLAY                    40004
 #define ID_HELP_ABOUT                   40006
-#define ID_VIEW_ICONS_LARGE             40009
-#define ID_VIEW_ICONS_SMALL             40010
+#define ID_VIEW_LARGE_ICON              40007
+#define ID_VIEW_SMALL_ICON              40008
+#define ID_VIEW_INDENT                  40011
 #define ID_OPTIONS_FONT                 40012
 #define ID_OPTIONS_CLONE_COLOR          40013
 #define ID_OPTIONS_DIR                  40014
@@ -618,7 +614,6 @@
 #define ID_PLAY_M1                      40113
 #define ID_NOTEPAD                      40114
 #define ID_RC_CLEAN                     40115
-#define ID_ENABLE_INDENT                40117
 #define ID_VIEW_TAB_ARTWORK             40120
 #define ID_VIEW_TAB_BOSSES              40121
 #define ID_VIEW_TAB_CABINET             40122

@@ -505,3 +505,4 @@ static const char * StatusString(int iStatus)
 
 	return ptr;
 }
+

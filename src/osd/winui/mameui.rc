@@ -104,12 +104,12 @@ BEGIN
             MENUITEM "Versus",                      ID_TOGGLE_TAB_VERSUS
         END
         MENUITEM SEPARATOR
-        MENUITEM "Large icons",                     ID_VIEW_ICONS_LARGE
-        MENUITEM "Small icons",                     ID_VIEW_ICONS_SMALL        
+        MENUITEM "Large icons",                     ID_VIEW_LARGE_ICON
+        MENUITEM "Small icons",                     ID_VIEW_SMALL_ICON
         MENUITEM SEPARATOR
-        MENUITEM "Indent Clones",                   ID_ENABLE_INDENT        
+        MENUITEM "Indent Clones",                   ID_VIEW_INDENT
         MENUITEM SEPARATOR
-        POPUP "Sort games list by"
+        POPUP "Sort games list"
         BEGIN
             MENUITEM "by &Name",                    ID_VIEW_BYGAME
             MENUITEM "by D&irectory",               ID_VIEW_BYDIRECTORY
@@ -1151,8 +1151,6 @@ BEGIN
     CONTROL         "C&lones",IDC_FILTER_CLONES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,30,41,10,0,HIDC_FILTER_CLONES
     CONTROL         "Non-Wor&king",IDC_FILTER_NONWORKING,"Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,44,61,10,0,HIDC_FILTER_NONWORKING
     CONTROL         "&Horizontal",IDC_FILTER_HORIZONTAL,"Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,58,57,10,0,HIDC_FILTER_HORIZONTAL
-    CONTROL         "&Computers",IDC_FILTER_COMPUTER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,72,57,10,0
-    CONTROL         "C&onsoles",IDC_FILTER_CONSOLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,100,72,57,10,0
     CONTROL         "&Unavailable",IDC_FILTER_UNAVAILABLE,"Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,86,57,10,0,HIDC_FILTER_UNAVAILABLE
     CONTROL         "Arcade",IDC_FILTER_ARCADE,"Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,100,57,10,0
     CONTROL         "&Raster Graphics",IDC_FILTER_RASTER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,100,16,70,10,0,HIDC_FILTER_RASTER
@@ -1593,17 +1591,13 @@ STRINGTABLE DISCARDABLE
 BEGIN
     IDS_VIEW_LARGEICONS     "Display items by using large icons."
     IDS_VIEW_SMALLICONS     "Display items by using small icons."
-    IDS_VIEW_LIST           "Displays items in a list."
-    IDS_VIEW_DETAILS        "Displays detailed information about each item in the window."
-    IDS_VIEW_GROUPED        "Displays items grouped by parent game"
+    IDS_VIEW_INDENT         "Indent clones"
     IDS_VIEW_SPACER4        "Spacer"
     IDS_VIEW_ARRANGE        "Contains commands for sorting by various columns"
-    IDS_VIEW_LINEUPICONS    "Arranges icons in a grid"
     IDS_VIEW_SPACER5        "Spacer"
     IDS_VIEW_REFRESH        "Refresh game list"
     IDS_VIEW_CONTEXTFILTERS "Allows filtering out games from a folder"
-    IDS_VIEW_CUSTOMIZEFIELDS
-                            "Customise which columns are used in the game list"
+    IDS_VIEW_CUSTOMIZEFIELDS "Customise which columns are used in the game list"
 END
 
 STRINGTABLE DISCARDABLE
@@ -1611,9 +1605,9 @@ BEGIN
     ID_FILE_EXIT            "Exit the application"
     ID_FILE_PLAY            "Play currently selected system"
     ID_HELP_ABOUT           "Displays program and copyright information"
-    ID_VIEW_ICONS_LARGE     "Display items by using large icons."
-    ID_VIEW_ICONS_SMALL     "Display items by using small icons."
-    ID_ENABLE_INDENT        "Offsets clones"
+    ID_VIEW_LARGE_ICON      "Display items by using large icons."
+    ID_VIEW_SMALL_ICON      "Display items by using small icons."
+    ID_VIEW_INDENT          "Offsets clones"
     ID_OPTIONS_FONT         "Set system list and folder list font"
     ID_OPTIONS_DIR          "Set directory configuration"
     ID_OPTIONS_DEFAULTS     "Set default system options"

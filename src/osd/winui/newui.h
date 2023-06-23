@@ -6,8 +6,8 @@
 //
 //============================================================
 
-#ifndef NEWUI_H
-#define NEWUI_H
+#ifndef WINUI_NEWUI_H
+#define WINUI_NEWUI_H
 
 ///// INCLUDES /////
 

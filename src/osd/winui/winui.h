@@ -1,4 +1,4 @@
-// For licensing and usage information, read docs/winui_license.txt
+// For licensing and usage information, read docs/release/winui_license.txt
 //****************************************************************************
 
 #ifndef WINUI_WINUI_H
@@ -62,19 +62,19 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd,char *filename, int filetype);
 HWND GetMainWindow();
 HWND GetTreeView();
 HWND GetProgressBar();
-HIMAGELIST GetLargeImageList(void);
-HIMAGELIST GetSmallImageList(void);
+HIMAGELIST GetLargeImageList();
+HIMAGELIST GetSmallImageList();
 void SetNumOptionFolders(int count);
 void GetRealColumnOrder(int order[]);
 HICON LoadIconFromFile(const char *iconname);
-void UpdateScreenShot(void);
+void UpdateScreenShot();
 void ResizePickerControls(HWND hWnd);
-void MamePlayGame(void);
+void MamePlayGame();
 int FindIconIndex(int nIconResource);
 int FindIconIndexByName(const char *icon_name);
-int GetSelectedPick(void);
+int GetSelectedPick();
 
-void UpdateListView(void);
+void UpdateListView();
 
 // Move The in "The Title (notes)" to "Title, The (notes)"
 char * ModifyThe(const char *str);
@@ -83,12 +83,11 @@ char * ModifyThe(const char *str);
 char * ConvertAmpersandString(const char *s);
 
 // globalized for painting tree control
-HBITMAP GetBackgroundBitmap(void);
-HPALETTE GetBackgroundPalette(void);
-MYBITMAPINFO* GetBackgroundInfo(void);
-BOOL GetUseXPControl(void);
+HBITMAP GetBackgroundBitmap();
+HPALETTE GetBackgroundPalette();
+MYBITMAPINFO* GetBackgroundInfo();
 
-int GetMinimumScreenShotWindowWidth(void);
+int GetMinimumScreenShotWindowWidth();
 
 // we maintain an array of drivers sorted by name, useful all around
 int GetParentIndex(const game_driver *driver);
@@ -102,9 +101,9 @@ void SetStatusBarTextF(int part_index, const char *fmt, ...) ATTR_PRINTF(2,3);
 
 int MameUIMain(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow);
 
-BOOL MouseHasBeenMoved(void);
+BOOL MouseHasBeenMoved();
 
-const char * GetSearchText(void);
+const char * GetSearchText();
 
 string longdots(string, uint16_t);
 WCHAR *ui_wstring_from_utf8(const char*);

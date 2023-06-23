@@ -47,8 +47,8 @@ struct PickerOptions
 
 enum
 {
-	VIEW_ICONS_LARGE = 0,
-	VIEW_ICONS_SMALL,
+	VIEW_LARGE_ICONS = 0,
+	VIEW_SMALL_ICONS,
 	VIEW_MAX
 };
 
