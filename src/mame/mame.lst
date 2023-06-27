@@ -17719,6 +17719,7 @@ feagv11                         //
 feagv2                          //
 feagv3                          //
 feagv5                          //
+feagv6                          //
 feagv7                          //
 feagv7a                         //
 feagv9                          //
@@ -28466,12 +28467,16 @@ bingoman                        //
 bingomana                       //
 
 @source:misc/bingor.cpp
+bellstrp                        // (c) 1998 Unknown
 bingor1                         // (c) 2002 Unknown
 bingor2                         // (c) 2002 Unknown
 bingor3                         // (c) 2002 Unknown
 bingor4                         // (c) 2002 Unknown
 bingor5                         // (c) 2002 Unknown
 bingor6                         // (c) 1991 AWR Hard & Soft
+roljokr1                        // (c) 1999 Paloma-Elektronik
+roljokr2                        // (c) 1997 Paloma-Elektronik
+roljokr3                        // (c) 1999 Paloma-Elektronik
 vip2000                         // (c) Paloma-Elektronik
 
 @source:misc/blitz68k.cpp
@@ -29472,6 +29477,7 @@ strlink                         // Strong Link (Ukraine)
 strlinka                        //
 
 @source:misc/ez2d.cpp
+asuscubx                        // 2000/2001 ASUS
 ez2d2m                          // 2001 Amuse World
 
 @source:misc/falgas_m89.cpp
@@ -30413,6 +30419,9 @@ fruitstba                       // 199? Webak
 fruitstbb                       // 1997 Webak
 fruitstbc                       // 1997 Webak
 fruitstbd                       // 1997 Webak
+fruitstbe                       // 1999 Webak
+fruitstbf                       // 1997 Webak
+fruitstbg                       // 1997 Webak
 
 @source:misc/mtu130.cpp
 mtu130
@@ -35404,10 +35413,10 @@ streetg2r5                      // (c) 1993
 streetgr3                       // (c) 1993
 
 @source:pc/pcipc.cpp
-pcipc                           //
-pcinv3                          //
-pcipctx                         //
 pciagp                          //
+pcinv3                          //
+pcipc                           //
+pcipctx                         //
 
 @source:pc/pcipc_sis.cpp
 sis85c496                       // 486 motherboards using the SiS 85C496/85C497 chipset
