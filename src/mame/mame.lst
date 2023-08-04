@@ -899,6 +899,11 @@ macpb180                        // 1992 Apple Macintosh PowerBook 180
 macpb180c                       // 1992 Apple Macintosh PowerBook 180c
 macpd210                        // 1992 Apple Macintosh PowerBook Duo 210
 
+@source:apple/macquadra605.cpp
+macqd605                        // 1993 Apple Macintosh Quadra 605
+maclc475                        // 1993 Apple Macintosh LC/Performa 475
+maclc575                        // 1994 Apple Macintosh LC/Performa 575
+
 @source:apple/macquadra700.cpp
 macqd700                        // 1991 Apple Macintosh Quadra 700
 
@@ -16100,14 +16105,15 @@ minimonyb
 miniguay
 
 @source:cirsa/missbamby.cpp
-basket                          // (c) 198? IGOA S.A.
+basket                          // (c) 1987? IGOA S.A.
 goldfrts                        //
-gwinner                         // (c) 1983 Reben
-luckyplr                        // (c) 1981 Cirsa
-minisupf                        // (c) 1981 Cirsa
-msbamby                         // (c) 198? Automatics Pasqual
-multy                           // (c) 1987 Deta
-trebol                          // (c) 1985 Regama
+gwinner                         // (c) 1983  Reben
+luckyplr                        // (c) 1981  Cirsa
+miniazard                       // (c) 1989? Arfyc
+minisupf                        // (c) 1981  Cirsa
+msbamby                         // (c) 198?  Automatics Pasqual
+multy                           // (c) 1987  Deta
+trebol                          // (c) 1985  Regama
 
 @source:cirsa/neptunp2.cpp
 bg_barmy                        //
@@ -19165,9 +19171,10 @@ h8                              //
 
 @source:heathkit/h19.cpp
 h19                             // Heath H19 (Zenith Z-19)
+gp19                            // H19 with Northwest Digital Systems GP-19
 super19                         // Super19 replacement ROMS for H19
-watz19                          // Watzman replacement ROMS for H19
 ultra19                         // ULTRA ROM replacement ROMS for H19
+watz19                          // Watzman replacement ROMS for H19
 
 @source:heathkit/h89.cpp
 h89                             //
@@ -39918,6 +39925,7 @@ twsoc98                         // 1998.04 Tecmo World Soccer '98 (Tecmo)
 vfkids                          // 1996.03 Virtua Fighter Kids
 vfremix                         // 1995.06 Virtua Fighter Remix
 vmahjong                        // 1997.02 Virtual Mahjong (Micronet)
+wasafari                        // 1998.11 Wanpaku Safari
 winterht                        // 1997.10 Winter Heat (Data East)
 yattrmnp                        // 1998.10 Yatterman Plus
 znpwfv                          // 1997.12 Zen Nippon Pro Wrestling featuring Virtua
@@ -40634,6 +40642,7 @@ nratechu                        // (c) 1996 Seta
 renju                           // (c) 1994 Visco
 
 @source:seta/speedatk.cpp
+daifugo
 speedatk                        // CB-0 (c) SetaKikaku
 
 @source:seta/speglsht.cpp
@@ -40928,6 +40937,7 @@ kay1024                         //
 profi                           //
 quorum                          //
 scorpio                         //
+scorpiongmx                     //
 scorpiontb                      //
 
 @source:sinclair/spec128.cpp
