@@ -77,8 +77,7 @@ public:
 		m_inputs(*this, "IN.%u", 0),
 		m_piece_hand(*this, "cpu_hand"),
 		m_out_motor(*this, "motor%u", 0U),
-		m_out_magnetx(*this, "magnetx%u", 0U),
-		m_out_magnety(*this, "magnety")
+		m_out_pos(*this, "pos_%c", unsigned('x'))
 	{ }
 
 	void phantom(machine_config &config);
@@ -97,8 +96,7 @@ protected:
 	optional_ioport_array<2> m_inputs;
 	output_finder<> m_piece_hand;
 	output_finder<5> m_out_motor;
-	output_finder<2> m_out_magnetx;
-	output_finder<> m_out_magnety;
+	output_finder<2> m_out_pos;
 
 	// address maps
 	virtual void main_map(address_map &map);
@@ -141,8 +139,7 @@ void phantom_state::machine_start()
 	// resolve outputs
 	m_piece_hand.resolve();
 	m_out_motor.resolve();
-	m_out_magnetx.resolve();
-	m_out_magnety.resolve();
+	m_out_pos.resolve();
 
 	// register for savestates
 	save_item(NAME(m_mux));
@@ -235,10 +232,10 @@ void phantom_state::check_rotation()
 
 void phantom_state::output_magnet_pos()
 {
-	int on = BIT(m_motors_ctrl, 4);
-	m_out_magnetx[on ^ 1] = 0xd0; // hide
-	m_out_magnetx[on] = m_hmotor_pos;
-	m_out_magnety = m_vmotor_pos;
+	// put active state on x bit 8
+	const int active = BIT(m_motors_ctrl, 4) ? 0x100 : 0;
+	m_out_pos[0] = m_hmotor_pos | active;
+	m_out_pos[1] = m_vmotor_pos;
 }
 
 TIMER_DEVICE_CALLBACK_MEMBER(phantom_state::motors_timer)
