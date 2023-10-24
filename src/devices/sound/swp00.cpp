@@ -1410,7 +1410,7 @@ void swp00_device::sound_stream_update(sound_stream &stream, std::vector<read_st
 		var_r = m7(var_r, 0x07);
 
 		//   Split depending on the variant selected
-		s32 var_out_l, var_out_r;
+		s32 var_out_l = 0, var_out_r = 0;
 
 		switch(m_meg_control & 0xc0) {
 		case 0x00: {
