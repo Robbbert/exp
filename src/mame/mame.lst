@@ -17266,6 +17266,7 @@ rongrong                        // "80" (c) 1994 Nakanihon
 rongrongg                       // "80" (c) 1994 Nakanihon
 rongrongj                       // "80" (c) 1994 Nakanihon
 seljan2                         // "557" 1996 Dynax / Face
+seljan2a                        // "508" 1996 Dynax / Face
 sryudens                        // "502" (c) 1996 Dynax / Face
 ultrchmp                        // "104" (c) 1995 Nakanihon
 ultrchmph                       // "114" (c) 1995 Nakanihon
@@ -24137,6 +24138,7 @@ viostormeb                      // GX168 (c) 1993 (Europe)
 viostormj                       // GX168 (c) 1993 (Japan)
 viostormu                       // GX168 (c) 1993 (US)
 viostormub                      // GX168 (c) 1993 (US)
+viostormubbl                    // bootleg
 
 @source:konami/nemesis.cpp
 blkpnthr                        // GX604 (c) 1987 (Japan)
@@ -33880,6 +33882,7 @@ yosimotm                        // (c) 1994 Nichibutsu/Yoshimoto Kougyou
 yosimoto                        // (c) 1994 Nichibutsu/Yoshimoto Kougyou
 
 @source:nichibutsu/nichild.cpp
+ldmj1mbh                        // (c) 1991
 ldquiz4                         // (c) 1992
 shabdama                        // (c) 1991
 

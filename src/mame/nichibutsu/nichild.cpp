@@ -15,11 +15,16 @@ TODO:
 - V9938 has issues with layer clears, has an hard time sending a vblank irq (the only one enabled)
   at the right time. Removing the invert() from the int_cb will "fix" it at the expense of being
   excruciatingly slow.
-- Document meaning of DIP switches
+- Document meaning of remaining DIP switches
+
+Notes:
+- In service mode, press KAN/PON for the sound test and CHI/REACH for the voice test
+- Push START to continue after the RGB test screen is shown
 
 ===================================================================================================
 
 1 x TMPZ84C011AF-6 main CPU
+1 x 12.000MHz OSC
 1 x 21.47727MHz OSC
 1 x Z0840004PSC audio CPU
 1 x 4.000MHz OSC
@@ -53,7 +58,8 @@ A LDC labeled 2 pin connector
 
 namespace {
 
-#define MAIN_CLOCK XTAL(21'477'272)
+#define MAIN_CLOCK XTAL(12'000'000)
+#define VDP_CLOCK XTAL(21'477'272)
 #define SOUND_CLOCK XTAL(4'000'000)
 
 class nichild_state : public driver_device
@@ -382,7 +388,9 @@ static INPUT_PORTS_START( nichild_mj )
 	PORT_DIPUNKNOWN_DIPLOC(0x02, 0x02, "DSWA:7")
 	PORT_DIPUNKNOWN_DIPLOC(0x04, 0x04, "DSWA:6")
 	PORT_DIPUNKNOWN_DIPLOC(0x08, 0x08, "DSWA:5")
-	PORT_DIPUNKNOWN_DIPLOC(0x10, 0x10, "DSWA:4")
+	PORT_DIPNAME(0x10, 0x10, DEF_STR( Coinage )) PORT_DIPLOCATION("DSWA:4")
+	PORT_DIPSETTING(0x10, DEF_STR( 1C_1C ))
+	PORT_DIPSETTING(0x00, DEF_STR( 1C_2C ))
 	PORT_DIPUNKNOWN_DIPLOC(0x20, 0x20, "DSWA:3")
 	PORT_DIPUNKNOWN_DIPLOC(0x40, 0x40, "DSWA:2")
 	PORT_DIPUNKNOWN_DIPLOC(0x80, 0x80, "DSWA:1")
@@ -467,12 +475,22 @@ static INPUT_PORTS_START( nichild_quiz )
 	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
 
 	PORT_START("DSWA")
-	PORT_DIPUNKNOWN_DIPLOC(0x01, 0x01, "DSWA:8")
-	PORT_DIPUNKNOWN_DIPLOC(0x02, 0x02, "DSWA:7")
-	PORT_DIPUNKNOWN_DIPLOC(0x04, 0x04, "DSWA:6")
+	PORT_DIPNAME( 0x01, 0x00, "RGB Test Screen" ) PORT_DIPLOCATION("DSWA:8")
+	PORT_DIPSETTING(    0x01, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPUNKNOWN_DIPLOC(0x02, 0x02, "DSWA:7") // ld video inserted into attract mode?
+	// at least for ldquiz4, to be verified for other games
+	// (definitely don't affect sound in shabdama unless it expects attract mode audio from LD player)
+	PORT_DIPNAME( 0x04, 0x00, DEF_STR( Demo_Sounds ) ) PORT_DIPLOCATION("DSWA:6")
+	PORT_DIPSETTING(    0x04, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
 	PORT_DIPUNKNOWN_DIPLOC(0x08, 0x08, "DSWA:5")
-	PORT_DIPUNKNOWN_DIPLOC(0x10, 0x10, "DSWA:4")
-	PORT_DIPUNKNOWN_DIPLOC(0x20, 0x20, "DSWA:3")
+	PORT_DIPNAME(0x10, 0x10, DEF_STR( Lives )) PORT_DIPLOCATION("DSWA:4")
+	PORT_DIPSETTING(0x10, "3")
+	PORT_DIPSETTING(0x00, "5")
+	PORT_DIPNAME(0x20, 0x20, DEF_STR( Coinage )) PORT_DIPLOCATION("DSWA:3")
+	PORT_DIPSETTING(0x20, DEF_STR( 1C_1C ))
+	PORT_DIPSETTING(0x00, DEF_STR( 1C_2C ))
 	PORT_DIPUNKNOWN_DIPLOC(0x40, 0x40, "DSWA:2")
 	PORT_DIPUNKNOWN_DIPLOC(0x80, 0x80, "DSWA:1")
 
@@ -507,7 +525,7 @@ static const z80_daisy_config daisy_chain_main[] =
 
 void nichild_state::nichild(machine_config &config)
 {
-	TMPZ84C011(config, m_maincpu, MAIN_CLOCK/4);
+	TMPZ84C011(config, m_maincpu, MAIN_CLOCK/2);
 	m_maincpu->set_daisy_config(daisy_chain_main);
 	m_maincpu->set_addrmap(AS_PROGRAM, &nichild_state::main_map);
 	m_maincpu->set_addrmap(AS_IO, &nichild_state::main_io);
@@ -534,7 +552,7 @@ void nichild_state::nichild(machine_config &config)
 	m_dsw_shifter[1]->data_callback().set_ioport("DSWA");
 	m_dsw_shifter[1]->qh_callback().set([this](int state) { m_dsw_data = state; });
 
-	V9938(config, m_v9938, MAIN_CLOCK);
+	V9938(config, m_v9938, VDP_CLOCK);
 	m_v9938->set_screen_ntsc("screen");
 	m_v9938->set_vram_size(0x40000);
 	m_v9938->int_cb().set(m_maincpu, FUNC(tmpz84c011_device::trg3)).invert();
@@ -558,6 +576,34 @@ void nichild_state::nichild(machine_config &config)
 
 ***************************************************************************/
 
+// NOTE: identical to shabdama below
+ROM_START( ldmj1mbh )
+	ROM_REGION( 0x10000, "ipl", ROMREGION_ERASE00 )
+	ROM_LOAD( "1.bin",        0x000000, 0x010000, CRC(e49e3d73) SHA1(6d17d60e1b6f8aee96f7a09f45113030064d3bdb) )
+
+	ROM_REGION( 0x20000, "audiorom", ROMREGION_ERASE00 )
+	ROM_LOAD( "3.bin",        0x000000, 0x010000, CRC(e8233c6e) SHA1(fbfdb03dc9f4e3e80e161b8522b676485ffb1c95) )
+	ROM_LOAD( "2.bin",        0x010000, 0x010000, CRC(3e0b5344) SHA1(eeae36fc4fca091065c1d51f05c2d11f44fe6d13) )
+
+	ROM_REGION( 0x200000, "gfx", ROMREGION_ERASE00 )
+	ROM_LOAD( "4.bin",        0x000000, 0x010000, CRC(199e2127) SHA1(2514d51cb06438b312d1f328c72baa739280416a) )
+	ROM_LOAD( "5.bin",        0x010000, 0x010000, CRC(0706386a) SHA1(29eee363775869dcc9c46285632e8bf745c9110b) )
+	ROM_LOAD( "6.bin",        0x020000, 0x010000, CRC(0fece809) SHA1(1fe8436af8ead02a3b517b6306f9824cd64b2d26) )
+	ROM_LOAD( "7.bin",        0x030000, 0x010000, CRC(7f08e3a6) SHA1(127018442183332175c9e1f558274cd2cb5f0147) )
+	ROM_LOAD( "8.bin",        0x040000, 0x010000, CRC(3e75423e) SHA1(62e24849ddeb004ed8570d2884afa4ab257cdf07) )
+	ROM_LOAD( "9.bin",        0x050000, 0x010000, CRC(1afdc5bf) SHA1(b07b32656ffc96b7f7d4bd242b2a6e0e105ab67a) )
+	ROM_LOAD( "10.bin",       0x060000, 0x010000, CRC(5da10b82) SHA1(72974d083110fc6c583bfa1c22ce3abe02ba86f6) )
+
+	ROM_REGION( 0x800, "plds", 0 ) // all protected
+	ROM_LOAD( "pal16l8.0", 0x000, 0x104, NO_DUMP )
+	ROM_LOAD( "pal16l8.1", 0x200, 0x104, NO_DUMP )
+	ROM_LOAD( "pal16l8.2", 0x400, 0x104, NO_DUMP )
+	ROM_LOAD( "pal16l8.3", 0x600, 0x104, NO_DUMP )
+
+	DISK_REGION( "laserdisc" )
+	DISK_IMAGE_READONLY( "ldmj1mbh", 0, NO_DUMP )
+ROM_END
+
 ROM_START( shabdama )
 	ROM_REGION( 0x10000, "ipl", ROMREGION_ERASE00 )
 	ROM_LOAD( "1.bin",        0x000000, 0x010000, CRC(e49e3d73) SHA1(6d17d60e1b6f8aee96f7a09f45113030064d3bdb) )
@@ -574,6 +620,12 @@ ROM_START( shabdama )
 	ROM_LOAD( "8.bin",        0x040000, 0x010000, CRC(3e75423e) SHA1(62e24849ddeb004ed8570d2884afa4ab257cdf07) )
 	ROM_LOAD( "9.bin",        0x050000, 0x010000, CRC(1afdc5bf) SHA1(b07b32656ffc96b7f7d4bd242b2a6e0e105ab67a) )
 	ROM_LOAD( "10.bin",       0x060000, 0x010000, CRC(5da10b82) SHA1(72974d083110fc6c583bfa1c22ce3abe02ba86f6) )
+
+	ROM_REGION( 0x800, "plds", 0 ) // all protected
+	ROM_LOAD( "pal16l8.0", 0x000, 0x104, NO_DUMP )
+	ROM_LOAD( "pal16l8.1", 0x200, 0x104, NO_DUMP )
+	ROM_LOAD( "pal16l8.2", 0x400, 0x104, NO_DUMP )
+	ROM_LOAD( "pal16l8.3", 0x600, 0x104, NO_DUMP )
 
 	DISK_REGION( "laserdisc" )
 	DISK_IMAGE_READONLY( "shabdama", 0, NO_DUMP )
@@ -617,7 +669,7 @@ ROM_END
 // 1990
 // LD花札 花のクリスマスイブ (LD version of nbmj8891.cpp hnxmasev?)
 // 1991
-// LD麻雀 第1弾 マリンブルーの瞳
+GAME( 1991, ldmj1mbh, 0,   nichild, nichild_mj,   nichild_state, empty_init, ROT0, "Nichibutsu / AV Japan", "LD Mahjong #1 Marine Blue no Hitomi (Japan)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND ) // LD麻雀 第1弾 マリンブルーの瞳
 // LD麻雀 第2弾 マリンブルーの瞳2
 // LD麻雀 第3弾 泊まりにおいでよ
 GAME( 1991, shabdama, 0,   nichild, nichild_mj,   nichild_state, empty_init, ROT0, "Nichibutsu / AV Japan", "LD Mahjong #4 Shabon-Dama (Japan)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND ) // LD麻雀 第4弾 シャボン玉
