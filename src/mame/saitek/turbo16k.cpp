@@ -13,6 +13,7 @@ NVRAM won't save properly.
 
 TODO:
 - dump/add other MCU revisions, SX8 for tmate/conquist is known to exist
+- verify if QFP SX5A has the same ROM contents as DIP SX5A
 - SX4A and SX5A read from port 2 bits 3 and 7 while DDR is 0xff, why does it work?
   I added a simple workaround for it in p2_w
 - what is t1850's official title? "1850 Deluxe Table Chess" is from the back of
@@ -36,7 +37,7 @@ I/O for LEDs and buttons is scrambled a bit for Team-Mate and Conquistador, the
 base hardware remains the same.
 
 SX4(A) program is used in:
-- Tandy 1850 60-2199 (8MHz, ST4A-PE-015 PCB)
+- Tandy (Radio Shack) 1850 60-2199 (8MHz, ST4A-PE-015 PCB)
 - no known SciSys chesscomputers, to distinguish: this program has 16 playing
   levels and SX5A has 17
 
@@ -45,13 +46,13 @@ SX5(A) program is used in:
 - SciSys Express 16K (8MHz, SH5-PE-009 PCB)
 - SciSys Astral (12MHz, SW4-PE-010 PCB)
 - SciSys Turbo 16K (12MHz, ST5-PE-023 PCB)
-- Tandy 1850 60-2201A (8MHz, ST5A-PE-002 PCB)
+- Tandy (Radio Shack) 1850 60-2201A (8MHz, ST5A-PE-002 PCB)
 - Mephisto Monaco (H+G brand Express 16K)
 
 SX8(A) program is used in:
 - Saitek Team-Mate aka Team-Mate Advanced Trainer (8MHz, ST8B-PE-017 PCB)
-- Saitek Cavalier aka Portable Advanced Trainer (8MHz, ? PCB)
-- Saitek Conquistador (12MHz, ? PCB)
+- Saitek Cavalier aka Portable Advanced Trainer (suspected, 8MHz, ? PCB)
+- Saitek Conquistador (12MHz, ST8-PE-021 PCB)
 
 *******************************************************************************/
 

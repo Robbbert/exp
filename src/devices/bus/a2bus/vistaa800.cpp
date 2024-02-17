@@ -2,43 +2,45 @@
 // copyright-holders:R. Justice
 /*********************************************************************
 
-	vistaa800.c
+    vistaa800.c
 
-	Implementation of the Vista A800 8" disk Controller Card for the Apple II
-	
-	This supported up to four double sided/double density 8inch drives.
-	With DMA support for the data transfers, and booting from the first 8inch drive.
-	
-	Manual available here:
-	http://mirrors.apple2.org.za/Apple%20II%20Documentation%20Project/Interface%20Cards/Disk%20Drive%20Controllers/Vista%20A800%20Disk%20Controller/Manuals/Vista%20A800%20Disk%20Controller%20Manual.pdf
-	
-	I/O address details:
-	Addr	Write						Read
-	----	-----						----
-	C0n0	1797 cmd reg				1797 status reg
-	C0n1	1797 track reg				1797 track reg
-	C0n2	1797 sector reg				1797 sector reg
-	C0n3	1797 data reg				1797 data reg
-	C0n4			--same as 0--
-	C0n5			--same as 1--
-	C0n6			--same as 2--
-	C0n7			--same as 3--
-	C0n8	low DMA address				not allowed
-	C0n9	high DMA address			not allowed
-	C0nA	DMA ON:Disk read			(same as write)
-	C0nB	DMA ON:Disk write			(same as write)
-	C0nC	DMA OFF						(same as write)
+    Implementation of the Vista A800 8" disk Controller Card for the Apple II
 
-			bit
-			7    6    5 4  3  2  1  0 
-	C0nD	sngl side x x fd fd fd fd	not allowed
-			dens sel  x x  3  2  1  0
-	C0nE			--spare--
+    This supported up to four double sided/double density 8inch drives.
+    With DMA support for the data transfers, and booting from the first 8inch drive.
 
-										bit
-										7   6    543210 
-	C0nF	not allowed					DMA one  xxxxxx
-										on  side
+    The card looks like it was released in 1981. The schematic is dated 19th Mar 1981 for the initial drawing, with a later revision date marked, however the month is not readable for it.
+
+    Manual available here:
+    http://mirrors.apple2.org.za/Apple%20II%20Documentation%20Project/Interface%20Cards/Disk%20Drive%20Controllers/Vista%20A800%20Disk%20Controller/Manuals/Vista%20A800%20Disk%20Controller%20Manual.pdf
+
+    I/O address details:
+    Addr    Write                       Read
+    ----    -----                       ----
+    C0n0    1797 cmd reg                1797 status reg
+    C0n1    1797 track reg              1797 track reg
+    C0n2    1797 sector reg             1797 sector reg
+    C0n3    1797 data reg               1797 data reg
+    C0n4            --same as 0--
+    C0n5            --same as 1--
+    C0n6            --same as 2--
+    C0n7            --same as 3--
+    C0n8    low DMA address             not allowed
+    C0n9    high DMA address            not allowed
+    C0nA    DMA ON:Disk read            (same as write)
+    C0nB    DMA ON:Disk write           (same as write)
+    C0nC    DMA OFF                     (same as write)
+
+            bit
+            7    6    5 4  3  2  1  0
+    C0nD    sngl side x x fd fd fd fd   not allowed
+            dens sel  x x  3  2  1  0
+    C0nE            --spare--
+
+                                        bit
+                                        7   6    543210
+    C0nF    not allowed                 DMA one  xxxxxx
+                                        on  side
 
 
 *********************************************************************/
@@ -71,10 +73,9 @@ protected:
 private:
 	static void floppy_formats(format_registration &fr);
 
-    // fdc handlers
+	// fdc handlers
 	void fdc_intrq_w(uint8_t state);
 	void fdc_drq_w(uint8_t state);
-	void fdc_sso_w(uint8_t state);
 
 	required_device<fd1797_device> m_fdc;
 	required_device<floppy_connector> m_floppy0;
@@ -88,7 +89,7 @@ private:
 	bool m_dmaenable_write;
 	uint8_t m_density;
 	uint8_t m_side;
-	uint8_t m_sso;
+	uint8_t m_twosided;
 };
 
 
@@ -138,7 +139,6 @@ void a2bus_vistaa800_device::device_add_mconfig(machine_config &config)
 
 	m_fdc->intrq_wr_callback().set(FUNC(a2bus_vistaa800_device::fdc_intrq_w));
 	m_fdc->drq_wr_callback().set(FUNC(a2bus_vistaa800_device::fdc_drq_w));
-	m_fdc->sso_wr_callback().set(FUNC(a2bus_vistaa800_device::fdc_sso_w));
 }
 
 void a2bus_vistaa800_device::device_start()
@@ -148,7 +148,7 @@ void a2bus_vistaa800_device::device_start()
 	save_item(NAME(m_dmaenable_write));
 	save_item(NAME(m_density));
 	save_item(NAME(m_side));
-	save_item(NAME(m_sso));
+	save_item(NAME(m_twosided));
 }
 
 void a2bus_vistaa800_device::device_reset()
@@ -158,7 +158,7 @@ void a2bus_vistaa800_device::device_reset()
 	m_dmaenable_write = false;
 	m_density = 0;
 	m_side = 0;
-	m_sso = 0;
+	m_twosided = 0;
 }
 
 //----------------------------------------------
@@ -181,7 +181,7 @@ uint8_t a2bus_vistaa800_device::read_c0nx(uint8_t offset)
 		case 7:
 			result = m_fdc->fd1797_device::read(offset & 0x03);
 			break;
-			
+
 		case 0xa:
 			if (!machine().side_effects_disabled())
 				m_dmaenable_read = true;
@@ -202,11 +202,9 @@ uint8_t a2bus_vistaa800_device::read_c0nx(uint8_t offset)
 
 		case 0xf:
 			if (m_dmaenable_read || m_dmaenable_write)
-			{
-				result = result | 0x80;
-			}
+				result |= 0x80;
 
-			result = result | (m_side << 5); // TODO: check this
+			result |= (m_twosided << 6); // 0 = two sided disk
 			break;
 
 		default:
@@ -233,7 +231,7 @@ void a2bus_vistaa800_device::write_c0nx(uint8_t offset, uint8_t data)
 		case 7:
 			m_fdc->fd1797_device::write(offset & 0x03, data);
 			break;
-			
+
 		case 8:
 			m_dmaaddr = (m_dmaaddr & 0xff00) + data;
 			break;
@@ -260,7 +258,7 @@ void a2bus_vistaa800_device::write_c0nx(uint8_t offset, uint8_t data)
 			m_fdc->dden_w(m_density);
 
 			m_side = BIT(data, 6);
-			
+
 			if (BIT(data, 0)) floppy = m_floppy0->get_device();
 			if (BIT(data, 1)) floppy = m_floppy1->get_device();
 			if (BIT(data, 2)) floppy = m_floppy2->get_device();
@@ -271,6 +269,7 @@ void a2bus_vistaa800_device::write_c0nx(uint8_t offset, uint8_t data)
 			{
 				floppy->ss_w(m_side);
 				floppy->mon_w(0);
+				m_twosided = floppy->twosid_r();
 			}
 			break;
 
@@ -304,25 +303,19 @@ void a2bus_vistaa800_device::fdc_drq_w(uint8_t state)
 {
 	if (state)
 	{
-		if (m_dmaenable_read) // TODO: verify if both can be turned on at the same time, and which has priority
+		if (m_dmaenable_read) // read has priority if both were enabled
 		{
 			uint8_t data = m_fdc->data_r();
 			slot_dma_write(m_dmaaddr, data);
 			m_dmaaddr++;
 		}
-
-		if (m_dmaenable_write)
+		else if (m_dmaenable_write)
 		{
 			uint8_t data = slot_dma_read(m_dmaaddr);
 			m_fdc->data_w(data);
 			m_dmaaddr++;
 		}
 	}
-}
-
-void a2bus_vistaa800_device::fdc_sso_w(uint8_t state)
-{
-	m_sso = state; // TODO: needs to be verified on real h/w. This is meant to be from the drive
 }
 
 } // anonymous namespace
