@@ -127,7 +127,7 @@
 #include "cpu/h8/h8s2655.h"
 #include "mulcd.h"
 #include "sound/swp30.h"
-#include "bus/plg100/plg100.h"
+#include "bus/plg1x0/plg1x0.h"
 
 #include "debugger.h"
 #include "speaker.h"
@@ -172,6 +172,7 @@ public:
 	{ }
 
 	void mu100(machine_config &config);
+	void mu100b(machine_config &config);
 
 protected:
 	virtual u16 adc_type_r();
@@ -184,9 +185,9 @@ protected:
 
 	required_device<h8s2655_device> m_maincpu;
 	required_device<swp30_device> m_swp30;
-	required_device<mulcd_device> m_lcd;
-	required_device<plg100_connector> m_ext1;
-	optional_device<plg100_connector> m_ext2;
+	optional_device<mulcd_device> m_lcd;
+	required_device<plg1x0_connector> m_ext1;
+	optional_device<plg1x0_connector> m_ext2;
 	required_ioport m_ioport_p7;
 	required_ioport m_ioport_p8;
 
@@ -199,19 +200,19 @@ protected:
 	u16 adc_midisw_r();
 	u16 adc_battery_r();
 
-	void p1_w(u16 data);
-	u16 p1_r();
-	void p2_w(u16 data);
-	void p3_w(u16 data);
-	void p5_w(u16 data);
-	void p6_w(u16 data);
-	u16 p6_r();
-	void pa_w(u16 data);
-	u16 pa_r();
-	void pb_w(u16 data);
-	u16 pb_r();
-	void pf_w(u16 data);
-	void pg_w(u16 data);
+	void p1_w(u8 data);
+	u8 p1_r();
+	void p2_w(u8 data);
+	void p3_w(u8 data);
+	void p5_w(u8 data);
+	void p6_w(u8 data);
+	u8 p6_r();
+	void pa_w(u8 data);
+	u8 pa_r();
+	void pb_w(u8 data);
+	u8 pb_r();
+	void pf_w(u8 data);
+	void pg_w(u8 data);
 
 	void ext_serial_update();
 	void h8_tx(int state);
@@ -305,22 +306,23 @@ u16 mu100r_state::adc_type_r()
 	return 0x3ff;
 }
 
-void mu100_state::p1_w(u16 data)
+void mu100_state::p1_w(u8 data)
 {
 	m_cur_p1 = data;
 }
 
-u16 mu100_state::p1_r()
+u8 mu100_state::p1_r()
 {
-	if((m_cur_p2 & P2_LCD_ENABLE)) {
-		if(m_cur_p2 & P2_LCD_RW) {
-			if(m_cur_p2 & P2_LCD_RS)
-				return m_lcd->data_read();
-			else
-				return m_lcd->control_read();
-		} else
-			return 0x00;
-	}
+	if(m_lcd)
+		if((m_cur_p2 & P2_LCD_ENABLE)) {
+			if(m_cur_p2 & P2_LCD_RW) {
+				if(m_cur_p2 & P2_LCD_RS)
+					return m_lcd->data_read();
+				else
+					return m_lcd->control_read();
+			} else
+				return 0x00;
+		}
 
 	if(!(m_cur_pf & 0x02)) {
 		u8 val = 0xff;
@@ -334,70 +336,73 @@ u16 mu100_state::p1_r()
 	return 0xff;
 }
 
-void mu100_state::p2_w(u16 data)
+void mu100_state::p2_w(u8 data)
 {
-	// LCB enable edge
-	if(!(m_cur_p2 & P2_LCD_ENABLE) && (data & P2_LCD_ENABLE)) {
-		if(!(m_cur_p2 & P2_LCD_RW)) {
-			if(m_cur_p2 & P2_LCD_RS)
-				m_lcd->data_write(m_cur_p1);
-			else
-				m_lcd->control_write(m_cur_p1);
+	if(m_lcd) {
+	// LCD enable edge
+		if((m_cur_p2 & P2_LCD_ENABLE) && !(data & P2_LCD_ENABLE)) {
+			if(!(m_cur_p2 & P2_LCD_RW)) {
+				if(m_cur_p2 & P2_LCD_RS)
+					m_lcd->data_write(m_cur_p1);
+				else
+					m_lcd->control_write(m_cur_p1);
+			}
 		}
+		m_lcd->set_contrast((data >> 3) & 7);
 	}
-	m_lcd->set_contrast((data >> 3) & 7);
 	m_cur_p2 = data;
 }
 
-void mu100_state::p3_w(u16 data)
+void mu100_state::p3_w(u8 data)
 {
 	m_cur_p3 = data;
 	logerror("A/D gain control %d\n", (data >> 4) & 3);
 }
 
-void mu100_state::p5_w(u16 data)
+void mu100_state::p5_w(u8 data)
 {
 	m_cur_p5 = data;
 	logerror("Rotary reset %d\n", (data >> 3) & 1);
 }
 
-void mu100_state::p6_w(u16 data)
+void mu100_state::p6_w(u8 data)
 {
 	m_cur_p6 = data;
 	m_cur_sw = (m_cur_sw & 0xc) | BIT(m_cur_pf, 2, 2);
 	ext_serial_update();
 }
 
-u16 mu100_state::p6_r()
+u8 mu100_state::p6_r()
 {
 	//  logerror("plug in detect read\n");
 	return 0x00;
 }
 
-void mu100_state::pa_w(u16 data)
+void mu100_state::pa_w(u8 data)
 {
 	m_cur_pa = data;
 	logerror("rotary encoder %d\n", (data >> 6) & 3);
 }
 
-u16 mu100_state::pa_r()
+u8 mu100_state::pa_r()
 {
 	logerror("offline detect read\n");
 	return 0x00;
 }
 
-void mu100_state::pf_w(u16 data)
+void mu100_state::pf_w(u8 data)
 {
 	if(!(m_cur_pf & 0x01) && (data & 0x01)) {
 		m_cur_ic32 = m_cur_p1;
-		m_lcd->set_leds((m_cur_p1 & 0x1f) | ((m_cur_p1 & 0x80) >> 2));
+		if(m_lcd)
+			m_lcd->set_leds((m_cur_p1 & 0x1f) | ((m_cur_p1 & 0x80) >> 2));
 	}
 	m_cur_pf = data;
 	m_cur_sw = (m_cur_sw & 0x7) | (BIT(m_cur_pf, 2) << 3);
 	ext_serial_update();
 }
 
-void mu100_state::pg_w(u16 data)
+void mu100_state::pg_w(u8 data)
 {
 	m_cur_pg = data;
 	m_cur_sw = (m_cur_sw & 0xb) | (BIT(m_cur_pg, 0) << 2);
@@ -429,7 +434,6 @@ void mu100_state::h8_tx(int state)
 
 void mu100_state::e1_tx(int state)
 {
-	logerror("e1 tx %d\n", state);
 	m_e1_tx = state;
 	ext_serial_update();
 }
@@ -447,7 +451,7 @@ void mu100_state::swp30_map(address_map &map)
 	map(0x800000, 0x9fffff).rom().region("swp30", 0x1000000).mirror(0x200000);
 }
 
-void mu100_state::mu100(machine_config &config)
+void mu100_state::mu100b(machine_config &config)
 {
 	H8S2655(config, m_maincpu, 16_MHz_XTAL);
 	m_maincpu->set_addrmap(AS_PROGRAM, &mu100_state::mu100_map);
@@ -472,9 +476,7 @@ void mu100_state::mu100(machine_config &config)
 	m_maincpu->write_portg().set(FUNC(mu100_state::pg_w));
 	m_maincpu->write_sci_tx<2>().set(FUNC(mu100_state::h8_tx));
 
-	MULCD(config, m_lcd);
-
-	PLG100_CONNECTOR(config, m_ext1, plg100_intf, "vl");
+	PLG1X0_CONNECTOR(config, m_ext1, plg1x0_intf, nullptr);
 	m_ext1->midi_tx().set(FUNC(mu100_state::e1_tx));
 
 	SPEAKER(config, "lspeaker").front_left();
@@ -498,11 +500,18 @@ void mu100_state::mu100(machine_config &config)
 	m_maincpu->write_sci_tx<0>().set(mdout, FUNC(midi_port_device::write_txd));
 }
 
+void mu100_state::mu100(machine_config &config)
+{
+	mu100b(config);
+
+	MULCD(config, m_lcd);
+}
+
 void mu100r_state::mu100r(machine_config &config)
 {
 	mu100(config);
 
-	PLG100_CONNECTOR(config, m_ext2, plg100_intf, nullptr);
+	PLG1X0_CONNECTOR(config, m_ext2, plg1x0_intf, nullptr);
 	m_ext2->midi_tx().set(FUNC(mu100r_state::e2_tx));
 }
 
@@ -536,7 +545,7 @@ ROM_END
 ROM_START( mu100b )
 	ROM_REGION( 0x200000, "maincpu", 0 )
 	// MU-100B v1.08 (Nov. 28, 1997)
-	ROM_LOAD16_WORD_SWAP( "xu50710-m27c160.bin", 0x000000, 0x200000, CRC(4b10bd27) SHA1(12d7c6e1bce7974b34916e1bfa5057ab55867476) )
+	ROM_LOAD16_WORD_SWAP( "xu50710.bin", 0x000000, 0x200000, CRC(4b10bd27) SHA1(12d7c6e1bce7974b34916e1bfa5057ab55867476) )
 
 	ROM_REGION32_LE( 0x1800000, "swp30", ROMREGION_ERASE00 )
 	ROM_LOAD32_WORD( "sx518b0.ic34", 0x0000000, 0x400000, CRC(2550d44f) SHA1(fd3cce228c7d389a2fde25c808a5b26080588cba) )
@@ -552,4 +561,4 @@ ROM_END
 
 SYST( 1997, mu100,  0,     0, mu100,  mu100, mu100_state,  empty_init, "Yamaha", "MU100",                    MACHINE_NOT_WORKING )
 SYST( 1997, mu100r, mu100, 0, mu100r, mu100, mu100r_state, empty_init, "Yamaha", "MU100 Rackable version",   MACHINE_NOT_WORKING )
-SYST( 1998, mu100b, mu100, 0, mu100,  mu100, mu100_state,  empty_init, "Yamaha", "MU100 Screenless version", MACHINE_NOT_WORKING )
+SYST( 1998, mu100b, mu100, 0, mu100b, mu100, mu100_state,  empty_init, "Yamaha", "MU100 Screenless version", MACHINE_NOT_WORKING )

@@ -21,6 +21,11 @@ function maintargetosdoptions(_target,_subtarget)
 			"-municode",
 		}
 
+	configuration { "mingw*" }
+		links {
+			"mingw32",
+		}
+
 	configuration { }
 
 	if _OPTIONS["DIRECTINPUT"] == "8" then
@@ -36,8 +41,11 @@ function maintargetosdoptions(_target,_subtarget)
 	links {
 		"comctl32",
 		"comdlg32",
-		"psapi",
+		"dinput8",
 		"ole32",
+		"psapi",
+		"shlwapi",
+		"uuid",
 	}
 
 -- needs same resources as messui, because dropdown menus are in mameui.rc
@@ -99,7 +107,7 @@ project ("osd_" .. _OPTIONS["osd"])
 	uuid (os.uuid("osd_" .. _OPTIONS["osd"]))
 	kind "StaticLib"
 
-	dofile("winui_cfg.lua")
+	dofile("windows_cfg.lua")
 	osdmodulesbuild()
 
 	defines {
@@ -226,7 +234,6 @@ project ("ocore_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/osdcore.h",
 		MAME_DIR .. "src/osd/strconv.cpp",
 		MAME_DIR .. "src/osd/strconv.h",
-		MAME_DIR .. "src/osd/windows/main.cpp",
 		MAME_DIR .. "src/osd/osdsync.cpp",
 		MAME_DIR .. "src/osd/osdsync.h",
 		MAME_DIR .. "src/osd/windows/winutf8.cpp",
